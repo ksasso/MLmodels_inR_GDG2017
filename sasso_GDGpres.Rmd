@@ -1,0 +1,279 @@
+---
+title: "Implimenting Popular ML Algorithms in R"
+author: "Katie Sasso"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output:
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+    incremental: true
+    css: styles.css
+    mathjax: local
+    self_contained: false
+    
+  
+
+
+---
+<style>
+.column-left{
+  float: left;
+  width: 46%;
+  text-align: left;
+}
+</style>
+
+<style>
+.column-left3{
+  float: left;
+  width: 32%;
+  text-align: left;
+}
+.column-center3{
+  display: inline-block;
+  width: 32%;
+  text-align: center;
+}
+.column-right3{
+  float: right;
+  width: 32%;
+  text-align: right;
+}
+</style>
+
+<style>
+pre {
+  white-space: pre !important;
+  overflow-y: scroll !important;
+  height: 50vh !important;
+}
+</style>
+
+
+## Tree-based methods for regression and classification:
+
+- CART (Classification and Regression Trees)
+    + Involve stratifying or segmenting the predictor space into a number of simple regions
+    + The set of rules used to segment the predictor space can be summarized in a tree 
+    + Tree-based methods are simple and useful for interpretation but not as competitive with the best supervised learning approaches in terms of prediction _but can be_ when they are combined (i.e., bagging, random forests, boosting)
+    
+
+
+<div class="notes">
+
+- these methods grow multiple trees which are then combined to yield a single consesnsus prediction. 
+- combining multiple trees can drastically improve accuracy but looses interpretation. End regions are terminal notes .
+
+</div>  
+
+## DO BASEBALL PLOT EXAMPLE HOW DO YOU STRATIFY THE DATA? 
+Salary or whatever is color-coded from low (blue, green) to high (yellow, red )
+DECISION TREE FOR THIS DATA
+
+PREDICTIONS ALL POINTS IN THE REGION Rj 
+MORE DETAILS OF THE TREE-BUILDING PROCESS SLIDE 
+greedy - top down (recursive binary splitting). start at the top and do this at each step
+minimize this (residual sum of squares or RSS) at EACH STEP(without regard  to any future steps) WITHIN each of the resulting regions 
+Process is continued until we reach a stopping point (e.g., no region contains more than 5 obs)
+
+overall tree stratifies or segments the players into 3 **regions of predictor space**
+
+TUNING PARAMETER
+Controls the size of the tree to avoid overfitting. Find the best subtree from growing big tree using cost complexity pruning to the large tree in order to obtain a sequence of best subtrees. Use cross- validation to pick alpha, were alpha is a TURNING PARAMETER that controls a trade-off between the subtree's complexity and its fit to the training data. After cross calidation return to the full data set to obtain the subtree corresponding to alpha. STOPPING POINT min obs in terminal nodes. FOR CLSASIFICATION - it's just the fraction of the obs in the region that don't belong to most common class. Pruning controlled by cost complexity
+
+
+## Ensemble Methods to improve accuracy 
+<div class="column-left">
+**Bootstrapping/Bagging**:
+
+- Take repeated samples from the training data set
+- Generate B different bootstrapped training data sets and grow a tree on each
+    + Take the average of all predictions from each bootstrapped training set  (or for classification take the majority vote)
+    + Pruning goes away (since we are averaging them too reduce variance)
+    + Can compute out-of-bag error estimate (i.e., like cross-validation)
+</div>
+
+<div class="column-left">
+INSERT PICTURE
+</div>
+
+<div class="notes">
+
+- BAGGING CLASSIFICATION: we record the class predicted by each of the B trees and take a majority vote. The overall prediction is the most commonly occurring class among the B predictions
+    + Recall that the key to bagging is that trees are repeatedly fit to bootstrapped subsets of the observations. One can show that on average, each bagged tree makes use of around two-thirds of the observations.
+    + The remaining one-third of the observations not used to fit a given bagged tree are referred to as the out-of-bag (OOB) observations.
+    + We can predict the response for the ith observation using each of the trees in which that observation was OOB. This will yield around B/3 predictions for the ith observation, which we average.
+
+BAGGING SUMMARY: Recall that bagging involves creating multiple copies of the original training data set using the bootstrap, fitting a separate decision tree to each copy, and then combining all of the trees in order to create a single predictive model. Each tree is built on a boot-strap data set INDEPENDENT OF OTHER TREES 
+</div>
+
+
+## Ensemble Methods to Improve Accuracy {.smaller}
+<div class="column-left">
+**Boosting**:
+
+- Similar to bagging except that the trees are grown _sequentially_ using information from previously grown trees VS. Bagging where each tree is built on a bootstrapped df independent of other trees
+- Each new tree is built to emphasize the observations that the previous trees mis-classified in order to improve on performance of the previous mix of trees
+    + We do this by fittng small trees to the residuals to slowly improve $\hat{f}$ where it isn't performing well.
+- Given sequential fitting and shrinkage parameters don't need to grow as large of trees.
+
+</div>
+
+<div class="column-left">
+
+- Set $\hat{f}(x)=0$ and $r_{i} = y_{i}$ for all _i_ in the training set
+- For _b_ = 1,2,..., _B_, repeat:
+    + Fit a tree $\hat{f} ^{b}$ with _d_ splits to the training data
+    + Update $\hat{f}$ by adding in a shrunken version of the new tree 
+\[
+\hat{f}(x) \leftarrow \hat{f}(x) + \lambda\hat{f} ^{b}(x) 
+\]
+    + Update the residuals
+\[
+r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b}(x_{i})
+\]
+    + Output the boosted model
+\[
+\hat{f}(x) = \sum_{b=1}^{B}\lambda\hat{f} ^{b}(x)
+\]
+</div>
+
+<div class="notes">
+
+- Like bagging, boosting is a general approach that can be applied to many statistical learning methods for regression or classification. We only discuss boosting for decision trees.
+- growing the tree to the residuals add it into the function, update the residuals, and continue. Trees are not independent of one another
+
+-Given the current model we fit a decision tree to the residuals from the model. ADd this new tree to the fitted fnction to update the residuals. 
+- Current model starts off at zero and add in some shrunken version of it to our model
+- Update as the residuals change by a corresponding amount
+-EACH TREE GROWN TO THE RESIDUALS LEFT OVER FROM THE PREVIOUS SET OF TREES 
+
+- MENTION boosting for classification is similar but a bi tmore complited - won't cover here.  Basically it starts by initiating equal weights per sample, fit classficaiton tree using sample wight, for misclassified samples increase sample eight save a stagg weight based on performance of current model and redo 
+
+</div>
+
+
+## Ensemble Methods to improve accuracy 
+
+**A number of tuning parameters for Boosting Models**: 
+
+- Number of trees _B_ 
+    + Way to control overfitting. 
+    + Use cross-val to select _B_
+- Shrinkage Parameter $\Lambda$
+    + small positive number. 
+    + Controls the rate at which boosting learns (i.e., .01, .001)
+- Depth _d_ 
+    + number of splits in each tree
+    + Try a few values (1,2,4,8). 
+
+
+<div class="notes">
+TUNING PARAMETERS:
+
+- DEPTH: if d = 1, only 1 variable per tree and no interactions. If d = 2 , interaction
+- SHRINKAGE: remember everytime we grow a tree we don't accept the full tree rather we shrink it back by a fraction. (sort of like pruning)
+
+</div>
+
+## Boosting vs. Bagging? 
+
+<div class="column-left">
+**Bagging**
+
+- May be less likely to over-fit the training data
+- Can be slightly less accurate 
+
+</div>
+
+<div class="column-left">
+**Boosting**
+
+- May be more likely to over-fit the training data
+- Has been shown to yield better accuracy than bagging
+
+</div>
+
+## Random Forests and Boosting: "Leveraging"  Multiple Decision Trees
+**Combine Regression Trees, Bagging or Boosting, and Some Tweaks to Improve Accuracy**
+
+
+<div class="column-left">
+_Random Forests + Bagging_:
+
+- Combine decision trees with bagging to acheive very high accuracy
+- Similar to the Bagging with the addition of a small tweak that decorrelates trees
+    + Each time a split is considerd only _m_ predictors chosen as split candidate from the full set of predictors and the split is only allowed to use one of them.
+    + Fresh selection taken at each split
+    + _m_ can take on different values, typically $m\approx \sqrt{p}$
+- Don't have to use pruning (i.e., fully grown trees)
+    
+</div>
+
+<div class="column-left">
+_Ensemble of Decision Trees + Boosting_:
+
+- Basically what was described above. Based on _weak_ learners or shallow trees.
+
+
+</div>
+
+<div class="notes">
+
+- as in bagging, we build a number of decision trees on bootstrapped training samples
+- but each time a split is considered a random selection of m predictors is chosen as split candidates from the full set of p predictors. the split is allowed to use only one of those m predictors. A fresh selection of m predictors is taken at each split.
+    + THIS LEADS TO REDUCED VARIANCE AFTER PREDICTION FROM TREES ARE AVG.
+    + **m = p WOULD JUST BE BAGGING**
+    + Also can think of m  as the number of predictors available for splitting at each interior tree node
+    
+
+</div>
+
+## Implimenting Random Forest and Gradient Boosting in R
+```{r message=FALSE, warning= FALSE, error=FALSE}
+
+
+```
+
+## Interpreting the Black Box - Variable Importance
+
+<div class="column-left">
+**For bagged/RF and boosting: 
+
+- Regression:
+    * The total amount that the RSS is decreased due to splits over a given predictor, averaged over all trees. Large = Important
+    
+- Classification: 
+    * The total amount a similar error measures (i.e., Gini index, entropy) is decreased by splits over a given predictor, averaged over all trees
+
+</div>
+
+<div class="column-left">
+```{r message=FALSE, warning= FALSE, error=FALSE}
+# EXAMPLES GO HERE 
+```
+<div>
+
+
+<div class="notes">
+</div>
+
+## Interpreting the Black Box - Variable Importance
+<div class="column-left">
+```{r message=FALSE, warning= FALSE, error=FALSE}
+# ANOTHER PLOT?  
+```
+</div>
+
+
+
+## Interpreting the Black Box - Plots
+
+
+## Sometimes simple is better 
+![Linear Regression vs. Regression Trees]\
+
+ content - Do neural nets (discuss code for a few others)
+
+
+
