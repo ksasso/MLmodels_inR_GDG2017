@@ -1,0 +1,115 @@
+---
+title: 'Implimenting Popular ML Algorithms in R: Workshop'
+author: "Katie Sasso"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    #code_folding: hide
+---
+
+## The Boston Housing Dataset
+
+This dataset contains information collected by the U.S Census Service concerning housing in the area of Boston Mass. 
+
+<div class="column-left">
+```{r message=FALSE, warning= FALSE, error=FALSE}
+
+library(MASS)
+library(caret)
+boston <- Boston
+str(boston)
+
+```
+
+The Boston data frame conaints the following variables:
+
+- **crim**: per capita crime rate by town.
+- **zn**:  proportion of residential land zoned for lots over 25,000 sq.ft.
+- **indus**: proportion of non-retail business acres per town.
+- **chas**: Charles River dummy variable (= 1 if tract bounds river; 0 otherwise).
+- **nox**: nitrogen oxides concentration (parts per 10 million).
+- **rm**: average number of rooms per dwelling.
+- **age**: proportion of owner-occupied units built prior to 1940.
+- **dis**: weighted mean of distances to five Boston employment centres.
+- **rad**: index of accessibility to radial highways.
+- **tax**: full-value property-tax rate per \$10,000.
+- **ptratio**: pupil-teacher ratio by town.
+- **black**: 1000(Bk - 0.63)^2 where Bk is the proportion of African-Americans by town.
+- **lstat**: lower status of the population (percent).
+- **medv**: median value of owner-occupied homes in \$1000s.
+    + Prices are not in error - data is from the 70s
+    
+**We will use various methods to predict the median value of owner-occupied homes in $1000s (medv)**
+
+### Data Checks
+```{r message=FALSE, warning= FALSE, error=FALSE}
+
+library(purrr)
+map_dbl(boston, ~sum(is.na(.)))
+# if there were NAs we would need to deal with this in an appropriate manner (list-wise deletion, multiple imputation, etc.)
+
+#Inspect the range of medv
+summary(boston$medv)
+library(ggplot2)
+ggplot(boston, aes(medv)) + geom_histogram(bins = 30)
+
+```
+
+## Bagging & Random Forest
+
+LEFT OFF HERE 
+http://rstudio-pubs-static.s3.amazonaws.com/156481_80ee6ee3a0414fd38f5d3ad33d14c771.html
+AND ISLR -- FOLLOW TO DO LIST 
+
+```{r message=FALSE, warning= FALSE, error=FALSE}
+# configure multicore - NOTE you can turn this off as an option in fit control
+library(doParallel)
+cl <- makeCluster(detectCores())
+registerDoParallel(cl)
+
+library(caret)
+set.seed(42)
+index <- sample(1:nrow(boston),round(0.75*nrow(boston)))
+train <- boston[index, ]
+test  <- boston[-index, ]
+
+```
+
+Recalling that bagging is a special case of a random forest (with m = p ), the randomForest() function can be used to perform both random forests and bagging: 
+
+
+
+Transform the categorical data (i.e., chas and rad ) to dummy variables. This is also known as _one-hot encoding_
+
+### eXtreme Gradient Boosting
+```{r message=FALSE, warning= FALSE, error=FALSE}
+```
+
+
+
+
+### Neural Network
+
+https://www.r-bloggers.com/fitting-a-neural-network-in-r-neuralnet-package/
+
+### A note about Caret
+
+[Caret](https://topepo.github.io/caret/index.html) is a package that provides a uniform interface to several popular ML functions that are part of separate packages (many in R and Python), as well as a way to standardize common tasks (such parameter tuning and variable importance)
+
+Pros vs Cons of using Caret vs. Source Package:
+
+- **Pro**: Easy to use and compare performance of multiple different algorithms 
+- **Con**: Less control over several tuning parameters
+FILL IN DETAILS FROM SITE AND INCLUDE EXAMPLE OF RANDOM FOREST 
+
+
+GET EXAMPLE HERE 
+https://machinelearningmastery.com/tune-machine-learning-algorithms-in-r/
+```{r message=FALSE, warning= FALSE, error=FALSE}
+
+# We will use the rf "method" from the randomForest library via Caret; however, we could've just as easily used the randomForest package instead and gotten the same results
+
+```
+

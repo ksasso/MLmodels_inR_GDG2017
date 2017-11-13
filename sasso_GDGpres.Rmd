@@ -229,11 +229,6 @@ _Ensemble of Decision Trees + Boosting_:
 
 </div>
 
-## Implimenting Random Forest and Gradient Boosting in R
-```{r message=FALSE, warning= FALSE, error=FALSE}
-
-
-```
 
 ## Interpreting the Black Box - Variable Importance
 
