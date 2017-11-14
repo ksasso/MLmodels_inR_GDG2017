@@ -126,7 +126,7 @@ BAGGING SUMMARY: Recall that bagging involves creating multiple copies of the or
     + Fit a tree $\hat{f} ^{b}$ with _d_ splits to the training data
     + Update $\hat{f}$ by adding in a shrunken version of the new tree 
 \[
-\hat{f}(x) \leftarrow \hat{f}(x) + \lambda\hat{f} ^{b}(x) 
+\hat{f}(x_{i}) \leftarrow \hat{f}(x_{i}) + \lambda\hat{f} ^{b}(x_{i}) 
 \]
     + Update the residuals
 \[
@@ -176,30 +176,12 @@ TUNING PARAMETERS:
 
 </div>
 
-## Boosting vs. Bagging? 
-
-<div class="column-left">
-**Bagging**
-
-- May be less likely to over-fit the training data
-- Can be slightly less accurate 
-
-</div>
-
-<div class="column-left">
-**Boosting**
-
-- May be more likely to over-fit the training data
-- Has been shown to yield better accuracy than bagging
-
-</div>
-
 ## Random Forests and Boosting: "Leveraging"  Multiple Decision Trees
 **Combine Regression Trees, Bagging or Boosting, and Some Tweaks to Improve Accuracy**
 
 
 <div class="column-left">
-_Random Forests + Bagging_:
+_Random Forests_:
 
 - Combine decision trees with bagging to acheive very high accuracy
 - Similar to the Bagging with the addition of a small tweak that decorrelates trees
