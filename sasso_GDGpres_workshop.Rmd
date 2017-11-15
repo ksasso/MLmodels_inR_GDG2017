@@ -41,6 +41,7 @@ The Boston data frame conaints the following variables:
 - **medv**: median value of owner-occupied homes in \$1000s.
     + Prices are not in error - data is from the 70s
     
+   
 **We will use various methods to predict the median value of owner-occupied homes in $1000s (medv)**
 
 ### Data Checks
@@ -67,7 +68,7 @@ One quick and easy way to start tackling various machine learning problems is to
 **Cost of Convenience**:
 
 - All tuning parameters available for a given model (i.e., function) may not be immediately obvious when called from packages like these
-    + e.g., ntree in randomForest package
+    + e.g., ntree in randomForest package - you can tune it from within caret but have to do so somewhat manually
 - Important data pre-processing steps for various models/functions may not be as apparent as they are in the source package documentation
     + e.g., pre-processing of factor/categorical variables in xgboost
 - Always wise to be familiar with the function's source documentation
@@ -95,9 +96,9 @@ registerDoParallel(cl)
 
 # use caret’s createDataPartition() function to partition the data into training (70%) and test sets (30%).
 
-set.seed(42)
+seed = set.seed(42)
 # ?createDataPartition
-index <- createDataPartition(boston$medv, p = 0.7)
+index <- createDataPartition(boston$medv, p = 0.7, list = FALSE)
 #multiple arguments we can use to customize and create balanced splits of the data. I.e., we can could change the groups argument to adjust the percentile based section that sampling is done within
 #We could split based on the predictors, customize splitting for timeseries, or split with consideration to important groups
 train <- boston[index, ]
@@ -140,100 +141,162 @@ head(boston_dummy)
 #Recalling that bagging is a special case of a random forest (with m = p), the randomForest() function can be used to perform both random forests and bagging.
 # set m = p (i.e., bagging)
 
-mtry <- ncol(boston)-1
-tunegrid <- expand.grid(.mtry=mtry)
+tunegrid <- expand.grid(mtry=ncol(boston)-1)
 
-model_rf <- train(medv ~ .,
+rf_fit <- train(medv ~ .,
                   data = train,
                   method = "rf",
                   tuneGrid = tunegrid,
                   trControl = trainControl(method = "repeatedcv", # could've also done oob resampling here instead 
                                                   number = 10,  # number of folds
-                                                  repeats = 3,  # number of repeats (i.e., 10-fold cross validation with 3 repeats)
-                                                  verboseIter = FALSE)) # we don't want to print training log
-print(model_rf)
-varImp(model_rf)
+                                                  repeats = 3,  # # of repeats (i.e., 10-fold cross validation with 3 repeats)
+                                                  verboseIter = FALSE),
+                importance = TRUE) # we don't want to print training log
+print(rf_fit)
+varImp(rf_fit)
 
 
 #let's try the typical setting of m - i.e., a random forest 
-mtry <- sqrt(ncol(boston))
-tunegrid <- expand.grid(.mtry=mtry)
 
-model_rf <- train(medv ~ .,
+tunegrid <- expand.grid(mtry=sqrt(ncol(boston))) # just creating a dataframe from all combinations of factor variables. Could've just done data.frame here but should use expand.grid in the event of more than one tuning parameter
+
+#could've also done this
+#tunegrid <- data.frame(mtry=sqrt(ncol(boston))) 
+
+rf_fit <- train(medv ~ .,
                   data = train,
                   method = "rf",
                   tuneGrid = tunegrid,
                   trControl = trainControl(method = "repeatedcv", # could've also done oob resampling here instead 
                                                   number = 10,  # number of folds
                                                   repeats = 3,  # repeats
-                                                  verboseIter = FALSE)) # we don't want to print training log
-print(model_rf)
-varImp(model_rf)
+                                                  verboseIter = FALSE),
+                importance = TRUE) # we don't want to print training log
+print(rf_fit)
+varImp(rf_fit)
 
 #how good is performance on test set? pretty good!
-yhat_rf = predict(model_rf,newdata=test)
+yhat_rf = predict(rf_fit,newdata=test)
 plot(yhat_rf, test$medv)
 abline(0,1)
 
 
-# could've also controlled nosesize, ntree, etc.  done oob resampling
+# could've set ntree as well but ability to do so not as apparent as in the source randomForest package - in my opinion
+# In caret, could also do a random search for turning parameters (random values within a range)
 
-model_rf <- train(medv ~ .,
+rf_fit <- train(medv ~ .,
                   data = train,
                   method = "rf",
-                  tuneGrid = tunegrid,
-                  trControl = trainControl(method = "oob", # could've also done oob resampling here instead 
-                                                  number = 10,  
-                                                  verboseIter = FALSE)) # we don't want to print training log
-print(model_rf)
-varImp(model_rf)
+                  tuneLength = 10,
+                  trControl = trainControl(method = "oob", #could've used resampling here instead
+                                           number = 10,  
+                                           verboseIter = FALSE,# we don't want to print training log
+                                           search = 'random'),
+                ntree = 25) #try random tuning parameters for all available tuning options. We will set the max number of tuning parameter combos generated from random search with tuneLength
 
+#looks like the sqrt with resampling may have been the best!
+print(rf_fit)
+#lastly - could've written some of our own code to try several different values of ntree with the optimal mtry value we've identified 
 
-### WITH SLAVA -- UPDATE SLAVE - this didn't actualy work 
-set.seed(825)
-gbmFit1 <- train(Sepal.Length ~ Species + Petal.Length + Petal.Width + Sepal.Width,
-                 data = iris, 
-                 method = "rf",
-                 mtry = 2,
-                 nodesize = 3L,
-                 ntree = 5L,
-                 #trControl = fitControl,
-                 ## This last option is actually one
-                 ## for gbm() that passes through
-                 verbose = FALSE)
+control <- trainControl(method="repeatedcv", number=10, repeats=3, search="grid")
+tunegrid <- expand.grid(mtry=c(sqrt(ncol(boston))))
+modellist <- list()
+for (ntree in c(1000, 1500, 2000, 2500)) {
+	set.seed(seed)
+	fit <- train(medv ~ ., data=train, method="rf", tuneGrid=tunegrid, trControl=control, ntree=ntree)
+	key <- toString(ntree)
+	modellist[[key]] <- fit
+}
+# compare results
+results <- resamples(modellist)
+summary(results)
+
+#Looks like ntree = 2000 outperforms the default value of 500. 
 
 ```
 
 ### eXtreme Gradient Boosting
 ```{r message=FALSE, warning= FALSE, error=FALSE}
+# could use library(xgboost) as well in R. 
+# impliment the extreme gradient boosting algorithm. Very high predictive accuracy - often used by winners of Kaggle competitions
 
-# LEFT OFF HERE : https://shiring.github.io/machine_learning/2017/04/23/one_r
-# ON EXTREME GRADIENT BOOSTN
+# it is extremely fast allowing the user to manually specify the number of threads
+# includes support for a range of languages including Scala, Java, R, Python, Julia and C++
 
-xgfit <- train(medv ~ .,
-                 data = boston, 
+#Supports distributed and widespread training on many machines that encompass GCE, AWS, Azure and Yarn clusters. XGBoost can also be integrated with Spark, Flink and other cloud dataflow systems with a built in cross validation at each iteration of the boosting process.
+
+#learn more here : https://www.analyticsvidhya.com/blog/2016/03/complete-guide-parameter-tuning-xgboost-with-codes-python/.
+
+#source cred on the above: https://www.analyticsvidhya.com/blog/2017/09/common-machine-learning-algorithms/
+
+?xgboost::xgboost
+
+
+xgb_fit <- train(medv ~ .,
+                 data = train, 
                  method = "xgbTree",
-                 #trControl = fitControl,
-                 ## This last option is actually one
-                 ## for gbm() that passes through
-                 verbose = FALSE)
+                  trControl = trainControl(method = "repeatedcv", 
+                                                  number = 10, 
+                                                  repeats = 3, 
+                                                  verboseIter = FALSE),
+                 importance = TRUE)
+print(xgb_fit)
+varImp(xgb_fit)
 
-xgfit
+ #rm (avg. number of rooms per dwelling) is still by far the most important
+
+#eta is our learning rate or "shrinkage parameter" from slides
+# max_depth - number of splits in each tree
+# nrounds  - number of iterations (i.e., trees to fit )
+
+# CHECK -- did it use this values?
+
+#could've tuned variables like before
+tunegrid <- expand.grid(nrounds=500, max_depth = 4,eta = 0.3, gamma = 0, colsample_bytree = 1, 
+                        min_child_weight = 1, subsample = 1)
+
+xgb_fit <- train(medv ~ .,
+                 data = train, 
+                 method = "xgbTree",
+               #  tuneGrid = tunegrid,
+                  trControl = trainControl(method = "repeatedcv", 
+                                                  number = 10, 
+                                                  repeats = 2, 
+                                                  verboseIter = FALSE),
+                 importance = TRUE)
+print(xgb_fit)
+
+  
+	
 ```
 
 
-
-
-### Neural Network
-
-
-
+### Neural Net
 
 ```{r message=FALSE, warning= FALSE, error=FALSE}
-#https://www.r-bloggers.com/fitting-a-neural-network-in-r-neuralnet-package/
-```
 
+## GO BACK AND ADD MORE IF KEEPING https://www.r-bloggers.com/fitting-a-neural-network-in-r-neuralnet-package/
 
-```{r}
+#just accepting the defaults
+
+fit_nn <- train(medv ~ .,
+                         data = train,
+                         method = "neuralnet",
+                         trControl = trainControl(method = "repeatedcv", 
+                                                  number = 10, 
+                                                  repeats = 3, 
+                                                  verboseIter = FALSE),
+                importance = TRUE)
+print(fit_nn)
+plot(fit_nn)
+#not a great fit!
+
+#going back to base for this
+n <- names(train)
+f <- as.formula(paste("medv ~", paste(n[!n %in% "medv"], collapse = " + ")))
+nn <- neuralnet(f,data=train,hidden=c(5,3),linear.output=T)
+
+plot(nn)
+
 ```
 

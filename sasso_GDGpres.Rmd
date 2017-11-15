@@ -50,6 +50,26 @@ pre {
 </style>
 
 
+##Machine Learning Types and Algorithms
+
+<div class="column-left">
+
+**Supervised**:
+
+- The outcome (or dependent variable, DV) is known or observed
+- DV is predicted from independent variables (IVs or predictors)
+- Training until a desired level of accuracy is reached
+- Some examples
+    + Regression, Random Forest, KNN (k-nearest-neighbor)
+</div>
+
+**Unsupervised**:
+
+- The outcome or DV is not known (no target or outcome to predict)
+- Often used for clustering population into different groups
+- Examples:
+    + Various clustering algorithms (K-means), NLP algorithms (Latent Dirichlet Allocation or LDA)
+
 ## Tree-based methods for regression and classification:
 
 - CART (Classification and Regression Trees)
