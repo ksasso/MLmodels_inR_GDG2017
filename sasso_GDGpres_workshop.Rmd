@@ -76,11 +76,11 @@ One quick and easy way to start tackling various machine learning problems is to
 
 ### The Caret Package in R
 
-<iframe src = "https://topepo.github.io/caret/index.html", style = "width:940px; height:700px"></iframe>
+[Caret](https://topepo.github.io/caret/index.html)
 
 ### Scikit in Python
 
-<iframe src = "http://scikit-learn.org/stable/index.html", style = "width:940px; height:700px"></iframe>
+[Scikit](http://scikit-learn.org/stable/index.html)
 
 
 ## Data Splitting and Pre-processing
@@ -208,6 +208,7 @@ for (ntree in c(1000, 1500, 2000, 2500)) {
 	modellist[[key]] <- fit
 }
 # compare results
+
 results <- resamples(modellist)
 summary(results)
 
@@ -229,7 +230,7 @@ summary(results)
 
 #source cred on the above: https://www.analyticsvidhya.com/blog/2017/09/common-machine-learning-algorithms/
 
-?xgboost::xgboost
+# ?xgboost::xgboost
 
 
 xgb_fit <- train(medv ~ .,
@@ -274,7 +275,7 @@ print(xgb_fit)
 ### Neural Net
 
 ```{r message=FALSE, warning= FALSE, error=FALSE}
-
+#CHECK
 ## GO BACK AND ADD MORE IF KEEPING https://www.r-bloggers.com/fitting-a-neural-network-in-r-neuralnet-package/
 
 #just accepting the defaults
@@ -285,13 +286,11 @@ fit_nn <- train(medv ~ .,
                          trControl = trainControl(method = "repeatedcv", 
                                                   number = 10, 
                                                   repeats = 3, 
-                                                  verboseIter = FALSE),
-                importance = TRUE)
+                                                  verboseIter = FALSE))
 print(fit_nn)
-plot(fit_nn)
 #not a great fit!
 
-#going back to base for this
+#going back to base for layer tweaking ( can do in Caret as well)
 n <- names(train)
 f <- as.formula(paste("medv ~", paste(n[!n %in% "medv"], collapse = " + ")))
 nn <- neuralnet(f,data=train,hidden=c(5,3),linear.output=T)

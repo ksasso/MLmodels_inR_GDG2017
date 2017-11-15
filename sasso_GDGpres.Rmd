@@ -63,12 +63,16 @@ pre {
     + Regression, Random Forest, KNN (k-nearest-neighbor)
 </div>
 
+<div class="column-left">
+
 **Unsupervised**:
 
 - The outcome or DV is not known (no target or outcome to predict)
 - Often used for clustering population into different groups
 - Examples:
     + Various clustering algorithms (K-means), NLP algorithms (Latent Dirichlet Allocation or LDA)
+
+</div>
 
 ## Tree-based methods for regression and classification:
 
@@ -78,7 +82,6 @@ pre {
     + Tree-based methods are simple and useful for interpretation but not as competitive with the best supervised learning approaches in terms of prediction _but can be_ when they are combined (i.e., bagging, random forests, boosting)
     
 
-
 <div class="notes">
 
 - these methods grow multiple trees which are then combined to yield a single consesnsus prediction. 
@@ -86,12 +89,30 @@ pre {
 
 </div>  
 
-## DO BASEBALL PLOT EXAMPLE HOW DO YOU STRATIFY THE DATA? 
-Salary or whatever is color-coded from low (blue, green) to high (yellow, red )
-DECISION TREE FOR THIS DATA
+## Regression Trees: The Basics 
 
-PREDICTIONS ALL POINTS IN THE REGION Rj 
-MORE DETAILS OF THE TREE-BUILDING PROCESS SLIDE 
+**Baseball Salary Data: How Would you Stratify it?**
+
+<div class="column-left">
+
+```{r, echo = FALSE, message=FALSE, warning= FALSE, error=FALSE,out.width = "450px"}
+knitr::include_graphics("baseball_presice.png")
+```
+
+</div>
+
+
+<div class="column-left">
+
+```{r, echo = FALSE, message=FALSE, warning= FALSE, error=FALSE,out.width = "450px"}
+knitr::include_graphics("baseball_cuts.png")
+```
+
+</div>
+
+
+<div class="notes">
+
 greedy - top down (recursive binary splitting). start at the top and do this at each step
 minimize this (residual sum of squares or RSS) at EACH STEP(without regard  to any future steps) WITHIN each of the resulting regions 
 Process is continued until we reach a stopping point (e.g., no region contains more than 5 obs)
@@ -99,8 +120,49 @@ Process is continued until we reach a stopping point (e.g., no region contains m
 overall tree stratifies or segments the players into 3 **regions of predictor space**
 
 TUNING PARAMETER
-Controls the size of the tree to avoid overfitting. Find the best subtree from growing big tree using cost complexity pruning to the large tree in order to obtain a sequence of best subtrees. Use cross- validation to pick alpha, were alpha is a TURNING PARAMETER that controls a trade-off between the subtree's complexity and its fit to the training data. After cross calidation return to the full data set to obtain the subtree corresponding to alpha. STOPPING POINT min obs in terminal nodes. FOR CLSASIFICATION - it's just the fraction of the obs in the region that don't belong to most common class. Pruning controlled by cost complexity
+Controls the size of the tree to avoid overfitting. Find the best subtree from growing big tree using cost complexity pruning to the large tree in order to obtain a sequence of best subtrees. Use cross- validation to pick alpha, were alpha is a TURNING PARAMETER that controls a trade-off between the subtree's complexity and its fit to the training data. After cross calidation return to the full data set to obtain the subtree corresponding to alpha. 
 
+**STOPPING POINT min obs in terminal nodes. FOR CLSASIFICATION - it's just the fraction of the obs in the region that don't belong to most common class**
+
+</div>
+
+***
+
+<div class="column-left">
+
+```{r, echo = FALSE, message=FALSE, warning= FALSE, error=FALSE,out.width = "450px"}
+knitr::include_graphics("baseball_tree.png")
+```
+
+</div>
+
+<div class="column-left">
+
+```{r, echo = FALSE, message=FALSE, warning= FALSE, error=FALSE,out.width = "450px"}
+knitr::include_graphics("baseball_tree_ongraph.png")
+```
+
+</div>
+
+
+<div class="notes">
+
+- Overall, the tree stratifies or segments the players into three regions of predictor space: R1 ={X | Years< 4.5}, R2 ={X | Years>=4.5, Hits<117.5}, and R3 ={X | Years>=4.5, Hits>=117.5}.
+
+- At a given internal node, the label (of the form Xj < tk) indicates the left-hand branch emanating from that split, and the right-hand branch corresponds to Xj ≥ tk. For instance, the split at the top of the tree results in two large branches. The left-hand branch corresponds to Years<4.5, and the right-hand branch corresponds to Years>=4.5.
+
+- The tree has two internal nodes and three terminal nodes, or leaves. The number in each leaf is the mean of the response for the observations that fall there.
+
+- In keeping with the tree analogy, the regions R1, R2, and R3 are known as terminal nodes
+- Decision trees are typically drawn upside down, in the sense that the leaves are at the bottom of the tree.
+- The points along the tree where the predictor space is split are referred to as internal nodes
+- In the hitters tree, the two internal nodes are indicated by the text Years<4.5 and Hits<117.5.
+
+- INTERPRET: Years most important.
+    + Less experience = Hits made in the previous yaer play little role in salary
+    + 5+ yrs of experience - Hits made does affect salary
+
+</div>
 
 ## Ensemble Methods to improve accuracy 
 <div class="column-left">
