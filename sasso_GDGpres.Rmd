@@ -89,7 +89,7 @@ pre {
 
 </div>  
 
-## Regression Trees: The Basics 
+## Regression Trees: The Basics$^{1}$ 
 
 **Baseball Salary Data: How Would you Stratify it?**
 
@@ -133,14 +133,22 @@ Controls the size of the tree to avoid overfitting. Find the best subtree from g
 ```{r, echo = FALSE, message=FALSE, warning= FALSE, error=FALSE,out.width = "450px"}
 knitr::include_graphics("baseball_tree.png")
 ```
+$^{1}$
 
 </div>
 
 <div class="column-left">
 
-```{r, echo = FALSE, message=FALSE, warning= FALSE, error=FALSE,out.width = "450px"}
+```{r, echo = FALSE, message=FALSE, warning= FALSE, error=FALSE,out.width = "450px", out.height='300px'}
 knitr::include_graphics("baseball_tree_ongraph.png")
 ```
+**GOAL**$^{1}$:
+
+Find boxes $R_{1},...,R_{J}$ that minimize the RSS, given by 
+\[
+\sum_{j = 1}^{J}\sum_{i \in R_{j}}(y_{i}-\hat{y}_{R_{j}})^{2}
+\]
+where $\hat{y}_{R_{j}}$ is the mean response for the training observation within the _j_ th box
 
 </div>
 
@@ -166,7 +174,7 @@ knitr::include_graphics("baseball_tree_ongraph.png")
 
 ## Ensemble Methods to improve accuracy 
 <div class="column-left">
-**Bootstrapping/Bagging**:
+**Bootstrapping/Bagging**$^{1}$:
 
 - Take repeated samples from the training data set
 - Generate B different bootstrapped training data sets and grow a tree on each
@@ -176,9 +184,13 @@ knitr::include_graphics("baseball_tree_ongraph.png")
 </div>
 
 <div class="column-left">
-INSERT PICTURE
+
 </div>
 
+```{r, echo = FALSE, message=FALSE, warning= FALSE, error=FALSE,out.width = "450px", out.height='450px'}
+knitr::include_graphics("bagging.png")
+```
+$^{2}$
 <div class="notes">
 
 - BAGGING CLASSIFICATION: we record the class predicted by each of the B trees and take a majority vote. The overall prediction is the most commonly occurring class among the B predictions
@@ -187,10 +199,14 @@ INSERT PICTURE
     + We can predict the response for the ith observation using each of the trees in which that observation was OOB. This will yield around B/3 predictions for the ith observation, which we average.
 
 BAGGING SUMMARY: Recall that bagging involves creating multiple copies of the original training data set using the bootstrap, fitting a separate decision tree to each copy, and then combining all of the trees in order to create a single predictive model. Each tree is built on a boot-strap data set INDEPENDENT OF OTHER TREES 
+
+**PICTURE**:
+- Schematic of the RF algorithm based on the Bagging (Bootstrap 1Aggregating) method. (1) Stage 1: Use bootstrap method to sample Msubsets from the original trainingdata sets. (2) Stage 2: Build Mindependent decision trees for model training using input covariates (v). For each individual decision tree, the prediction con?dence (posterior probabilityp?Pdjv) increases from the root toward the leaves. (3) Stage 3: Obtain prediction from each bootstrap tree over Mreplications. (4) Stage 4: Decide the ?nal result by average or majorityvoting 
+
 </div>
 
 
-## Ensemble Methods to Improve Accuracy {.smaller}
+## Ensemble Methods to Improve Accuracy$^{1}$
 <div class="column-left">
 **Boosting**:
 
@@ -235,8 +251,9 @@ r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b}(x_{i})
 </div>
 
 
-## Ensemble Methods to improve accuracy 
+## Ensemble Methods to improve accuracy$^{1}$ 
 
+<div class="column-left">
 **A number of tuning parameters for Boosting Models**: 
 
 - Number of trees _B_ 
@@ -248,7 +265,16 @@ r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b}(x_{i})
 - Depth _d_ 
     + number of splits in each tree
     + Try a few values (1,2,4,8). 
+</div>
 
+
+<div class="column-left">
+
+```{r, echo = FALSE, message=FALSE, warning= FALSE, error=FALSE,out.width = "450px", out.height='450px'}
+knitr::include_graphics("gradientboosting.jpg")
+```
+$^{3}$
+</div>
 
 <div class="notes">
 TUNING PARAMETERS:
@@ -279,8 +305,8 @@ _Ensemble of Decision Trees + Boosting_:
 
 - Basically what was described above. Based on _weak_ learners or shallow trees.
 
-
 </div>
+
 
 <div class="notes">
 
@@ -289,15 +315,19 @@ _Ensemble of Decision Trees + Boosting_:
     + THIS LEADS TO REDUCED VARIANCE AFTER PREDICTION FROM TREES ARE AVG.
     + **m = p WOULD JUST BE BAGGING**
     + Also can think of m  as the number of predictors available for splitting at each interior tree node
-    
-
+  
 </div>
 
+## Sometimes simple is better$^{1}$ 
 
-## Interpreting the Black Box - Variable Importance
+```{r, echo = FALSE, message=FALSE, warning= FALSE, error=FALSE,out.width = "800px", out.height='500px'}
+knitr::include_graphics("simple_better.png")
+```
+
+## Interpreting the Black Box
 
 <div class="column-left">
-**For bagged/RF and boosting: 
+**For bagged/RF and boosting**: 
 
 - Regression:
     * The total amount that the RSS is decreased due to splits over a given predictor, averaged over all trees. Large = Important
@@ -307,32 +337,118 @@ _Ensemble of Decision Trees + Boosting_:
 
 </div>
 
+
 <div class="column-left">
-```{r message=FALSE, warning= FALSE, error=FALSE}
-# EXAMPLES GO HERE 
+
+```{r message=FALSE, warning= FALSE, error=FALSE, echo=FALSE, out.width = "500px", out.height='500px'}
+library(dplyr)
+library(ggplot2)
+load(file = "imp_df.Rdata")
+
+varimpplot <- imp_df %>%  
+  ggplot(aes(x = reorder(var, Overall),Overall)) + 
+  geom_bar(stat = "density") +
+  coord_flip() + 
+  ylab('Variable Importance')+
+  xlab('Variable')
+
+varimpplot
 ```
-<div>
 
-
-<div class="notes">
 </div>
 
-## Interpreting the Black Box - Variable Importance
+
+## Favorite Resouces: Machine Learning Concepts 
+
 <div class="column-left">
-```{r message=FALSE, warning= FALSE, error=FALSE}
-# ANOTHER PLOT?  
-```
+
+**Nuts and Bults** 
+
+- "An Introduction to Statistical Learning (ISL)" by James, Witten, Hastie and Tibshirani
+    + Available for free online 
+    + The best, in my opinion, clear overview of several foundational ML concepts 
+    + More approachable videos, code, and slides found [here](https://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours-of-expert-videos/)
+
+- Andrew Ng's Machine Learning Course on Coursera
+    + Great online course to really understand the fundamentals
+    + Free (unless you want "certificate") and readily available [here](https://www.coursera.org/learn/machine-learning)
+    + Be prepared for some math 
+
+</div>
+
+<div class="column-left">
+
+**Quicker Crash Courses**
+
+- [Data Camp Caret Course](https://www.datacamp.com/)
+    + Great for learning R in general, but specific course on the Caret Package
+    + ~$30 monthly subscription (can sometimes access first portal for free)
+- [Super High-level on-line Blog Post](https://www.analyticsvidhya.com/blog/2017/09/common-machine-learning-algorithms/)
+    +  Truly the bare minimum in terms of background, but covers a lot of ground 
+    +  Enough to get started and good code examples in Python and R
+
 </div>
 
 
+## Favorite Resouces: Visualization and Understanding
 
-## Interpreting the Black Box - Plots
+[**xgboostExplainer**](https://medium.com/applied-data-science/new-r-package-the-xgboost-explainer-51dd7d1aa211):
 
+- New package that makes your XGBoost model "as interpretable as a single decision tree"
 
-## Sometimes simple is better 
-![Linear Regression vs. Regression Trees]\
+[**LIME**](https://cran.r-project.org/web/packages/lime/index.html):
 
- content - Do neural nets (discuss code for a few others)
+- Local Interpretable Model-Agnostic Explanations$^{4}$
+- Nice tutorial [here](https://www.r-bloggers.com/explaining-complex-machine-learning-models-with-lime/)
+- Broad capabilities _for classification_: can apply with any model for which you can obtain prediction probabilities
+
+[**ICEbox**](https://github.com/kapelner/ICEbox)$^{5}$:
+
+- Allow you to visualize the model estimated by any supervised learning algorithm
+- Classical partial dependence plots (PDPs) help visualize the average partial relationship between the predicted response and one or more features, _particularly in the presence of substantial interaction effects_
+- [Good overview of this and similar resources](https://www.r-bloggers.com/beyond-beta-relationships-between-partialplot-icebox-and-predcomps/)
+
+##JUST GIVE ME A BUTTON
+
+[h2o auto ML](https://cran.r-project.org/web/packages/h2o/h2o.pdf):
+
+- Available in multiple language and for multiple platforms
+- h2o has FAR MORE capabilities than this "h2o.automl" function and is definitely worth checking out
+- automl function automates the supervised machine learning model training process fir a number of models
+- [Nice tutorial here](http://www.business-science.io/business/2017/09/18/hr_employee_attrition.html) 
+    + **Disclaimer** in my experience there are few datasets that come ready for a function like this without pre-processing. _Garbage in - garbage out_
+
+##Shameless Plug
+
+<div class="column-left">
+[Women in Analytics Conference](https://www.womeninanalytics.org/):
+
+- 3/15/18 in Columbus
+- All day conference packed with technical and strategic talks from speakers all over the country
+- Get your tickets now, apply for one of our remaining speaker spots, or our data viz competition
+- Also check out the great ways to attend for free
+
+</div>
+
+<div class="column-left">
+
+```{r, echo = FALSE, message=FALSE, warning= FALSE, error=FALSE,out.width = "450px", out.height='450px'}
+knitr::include_graphics("WA_Logo_HiRes-01_redsized.png")
+```
+
+</div>
+
+## Citations
+
+$^{1}$ James, G., Witten, D., Hastie, T., & Tibshirani, R. (2013). _An introduction to statistical learning (Vol. 112)_. New York: springer.
+
+$^{2}$ He, X., Chaney, N. W., Schleiss, M., & Sheffield, J. (2016). Spatial downscaling of precipitation using adaptable random forests. _Water Resources Research, 52(10)_, 8217-8237.
+
+$^{3}$ [https://dimensionless.in/gradient-boosting/](https://dimensionless.in/gradient-boosting/)
+
+$^{4}$ Ribeiro, M. T., Singh, S., & Guestrin, C. (2016, August). Why should i trust you?: Explaining the predictions of any classifier. _In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (pp. 1135-1144)_. ACM. Chicago	
+
+$^{5}$ Goldstein, A., Kapelner, A., Bleich, J., & Pitkin, E. (2015). Peeking inside the black box: Visualizing statistical learning with plots of individual conditional expectation. _Journal of Computational and Graphical Statistics, 24(1)_, 44-65. Chicago	
 
 
 

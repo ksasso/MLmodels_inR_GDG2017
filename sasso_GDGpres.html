@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Implimenting Popular ML Algorithms in R</title>
+
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="generator" content="pandoc" />
+
+
+
+  <meta name="date" content="2017-11-16" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <base target="_blank">
+
+  <script type="text/javascript">
+    var SLIDE_CONFIG = {
+      // Slide settings
+      settings: {
+                title: 'Implimenting Popular ML Algorithms in R',
+                        useBuilds: true,
+        usePrettify: true,
+        enableSlideAreas: true,
+        enableTouch: true,
+                      },
+
+      // Author information
+      presenters: [
+            {
+        name:  'Katie Sasso' ,
+        company: '',
+        gplus: '',
+        twitter: '',
+        www: '',
+        github: ''
+      },
+            ]
+    };
+  </script>
+
+  <link href="sasso_GDGpres_files/ioslides-13.5.1/fonts/fonts.css" rel="stylesheet" />
+  <link href="sasso_GDGpres_files/ioslides-13.5.1/theme/css/default.css" rel="stylesheet" />
+  <link href="sasso_GDGpres_files/ioslides-13.5.1/theme/css/phone.css" rel="stylesheet" />
+  <script src="sasso_GDGpres_files/ioslides-13.5.1/js/modernizr.custom.45394.js"></script>
+  <script src="sasso_GDGpres_files/ioslides-13.5.1/js/prettify/prettify.js"></script>
+  <script src="sasso_GDGpres_files/ioslides-13.5.1/js/prettify/lang-r.js"></script>
+  <script src="sasso_GDGpres_files/ioslides-13.5.1/js/prettify/lang-yaml.js"></script>
+  <script src="sasso_GDGpres_files/ioslides-13.5.1/js/hammer.js"></script>
+  <script src="sasso_GDGpres_files/ioslides-13.5.1/js/slide-controller.js"></script>
+  <script src="sasso_GDGpres_files/ioslides-13.5.1/js/slide-deck.js"></script>
+
+  <style type="text/css">
+
+    b, strong {
+      font-weight: bold;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    slides > slide {
+      -webkit-transition: all 0.4s ease-in-out;
+      -moz-transition: all 0.4s ease-in-out;
+      -o-transition: all 0.4s ease-in-out;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .auto-fadein {
+      -webkit-transition: opacity 0.6s ease-in;
+      -webkit-transition-delay: 0.4s;
+      -moz-transition: opacity 0.6s ease-in 0.4s;
+      -o-transition: opacity 0.6s ease-in 0.4s;
+      transition: opacity 0.6s ease-in 0.4s;
+      opacity: 0;
+    }
+
+  </style>
+
+  <link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+
+  <slide class="title-slide segue nobackground">
+        <!-- The content of this hgroup is replaced programmatically through the slide_config.json. -->
+    <hgroup class="auto-fadein">
+      <h1 data-config-title><!-- populated from slide_config.json --></h1>
+      <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
+      <p data-config-presenter><!-- populated from slide_config.json --></p>
+            <p style="margin-top: 6px; margin-left: -2px;">November 16, 2017</p>
+          </hgroup>
+  </slide>
+
+<style>
+.column-left{
+  float: left;
+  width: 46%;
+  text-align: left;
+}
+</style>
+
+<style>
+.column-left3{
+  float: left;
+  width: 32%;
+  text-align: left;
+}
+.column-center3{
+  display: inline-block;
+  width: 32%;
+  text-align: center;
+}
+.column-right3{
+  float: right;
+  width: 32%;
+  text-align: right;
+}
+</style>
+
+<style>
+pre {
+  white-space: pre !important;
+  overflow-y: scroll !important;
+  height: 50vh !important;
+}
+</style>
+
+<slide class=''><hgroup><h2>Machine Learning Types and Algorithms</h2></hgroup><article  id="machine-learning-types-and-algorithms" class="smaller ">
+
+<div class="column-left">
+<p><strong>Supervised</strong>:</p>
+
+<ul class = 'build'>
+<li>The outcome (or dependent variable, DV) is known or observed</li>
+<li>DV is predicted from independent variables (IVs or predictors)</li>
+<li>Training until a desired level of accuracy is reached</li>
+<li>Some examples
+
+<ul class = 'build'>
+<li>Regression, Random Forest, KNN (k-nearest-neighbor)</li>
+</ul></li>
+</ul></div>
+
+<div class="column-left">
+<p><strong>Unsupervised</strong>:</p>
+
+<ul class = 'build'>
+<li>The outcome or DV is not known (no target or outcome to predict)</li>
+<li>Often used for clustering population into different groups</li>
+<li>Examples:
+
+<ul class = 'build'>
+<li>Various clustering algorithms (K-means), NLP algorithms (Latent Dirichlet Allocation or LDA)</li>
+</ul></li>
+</ul></div>
+
+</article></slide><slide class=''><hgroup><h2>Tree-based methods for regression and classification:</h2></hgroup><article  id="tree-based-methods-for-regression-and-classification" class="smaller ">
+
+<ul class = 'build'>
+<li>CART (Classification and Regression Trees)
+
+<ul class = 'build'>
+<li>Involve stratifying or segmenting the predictor space into a number of simple regions</li>
+<li>The set of rules used to segment the predictor space can be summarized in a tree</li>
+<li>Tree-based methods are simple and useful for interpretation but not as competitive with the best supervised learning approaches in terms of prediction <em>but can be</em> when they are combined (i.e., bagging, random forests, boosting)</li>
+</ul></li>
+</ul>
+
+<aside class='note'><section><ul class = 'build'>
+<li>these methods grow multiple trees which are then combined to yield a single consesnsus prediction.</li>
+<li>combining multiple trees can drastically improve accuracy but looses interpretation. End regions are terminal notes .</li>
+</ul></section></aside>
+
+</article></slide><slide class=''><hgroup><h2>Regression Trees: The Basics\(^{1}\)</h2></hgroup><article  id="regression-trees-the-basics1" class="smaller ">
+
+<p><strong>Baseball Salary Data: How Would you Stratify it?</strong></p>
+
+<div class="column-left">
+<p><img src="baseball_presice.png" width="450px" /></p></div>
+
+<div class="column-left">
+<p><img src="baseball_cuts.png" width="450px" /></p></div>
+
+<aside class='note'><section><p>greedy - top down (recursive binary splitting). start at the top and do this at each step minimize this (residual sum of squares or RSS) at EACH STEP(without regard to any future steps) WITHIN each of the resulting regions Process is continued until we reach a stopping point (e.g., no region contains more than 5 obs)</p>
+
+<p>overall tree stratifies or segments the players into 3 <strong>regions of predictor space</strong></p>
+
+<p>TUNING PARAMETER Controls the size of the tree to avoid overfitting. Find the best subtree from growing big tree using cost complexity pruning to the large tree in order to obtain a sequence of best subtrees. Use cross- validation to pick alpha, were alpha is a TURNING PARAMETER that controls a trade-off between the subtree&#39;s complexity and its fit to the training data. After cross calidation return to the full data set to obtain the subtree corresponding to alpha.</p>
+
+<p><strong>STOPPING POINT min obs in terminal nodes. FOR CLSASIFICATION - it&#39;s just the fraction of the obs in the region that don&#39;t belong to most common class</strong></p></section></aside>
+
+</article></slide><slide class=''><hgroup><h2></h2></hgroup><article  class="smaller">
+
+<div class="column-left">
+<p><img src="baseball_tree.png" width="450px" /> \(^{1}\)</p></div>
+
+<div class="column-left">
+<p><img src="baseball_tree_ongraph.png" width="450px" height="300px" /> <strong>GOAL</strong>\(^{1}\):</p>
+
+<p>Find boxes \(R_{1},...,R_{J}\) that minimize the RSS, given by \[
+\sum_{j = 1}^{J}\sum_{i \in R_{j}}(y_{i}-\hat{y}_{R_{j}})^{2}
+\] where \(\hat{y}_{R_{j}}\) is the mean response for the training observation within the <em>j</em> th box</p></div>
+
+<aside class='note'><section><ul class = 'build'>
+<li><p>Overall, the tree stratifies or segments the players into three regions of predictor space: R1 ={X | Years&lt; 4.5}, R2 ={X | Years&gt;=4.5, Hits&lt;117.5}, and R3 ={X | Years&gt;=4.5, Hits&gt;=117.5}.</p></li>
+<li><p>At a given internal node, the label (of the form Xj &lt; tk) indicates the left-hand branch emanating from that split, and the right-hand branch corresponds to Xj ≥ tk. For instance, the split at the top of the tree results in two large branches. The left-hand branch corresponds to Years&lt;4.5, and the right-hand branch corresponds to Years&gt;=4.5.</p></li>
+<li><p>The tree has two internal nodes and three terminal nodes, or leaves. The number in each leaf is the mean of the response for the observations that fall there.</p></li>
+<li>In keeping with the tree analogy, the regions R1, R2, and R3 are known as terminal nodes</li>
+<li>Decision trees are typically drawn upside down, in the sense that the leaves are at the bottom of the tree.</li>
+<li>The points along the tree where the predictor space is split are referred to as internal nodes</li>
+<li><p>In the hitters tree, the two internal nodes are indicated by the text Years&lt;4.5 and Hits&lt;117.5.</p></li>
+<li>INTERPRET: Years most important.
+
+<ul class = 'build'>
+<li>Less experience = Hits made in the previous yaer play little role in salary</li>
+<li>5+ yrs of experience - Hits made does affect salary</li>
+</ul></li>
+</ul></section></aside>
+
+</article></slide><slide class=''><hgroup><h2>Ensemble Methods to improve accuracy</h2></hgroup><article  id="ensemble-methods-to-improve-accuracy" class="smaller ">
+
+<div class="column-left">
+<p><strong>Bootstrapping/Bagging</strong>\(^{1}\):</p>
+
+<ul class = 'build'>
+<li>Take repeated samples from the training data set</li>
+<li>Generate B different bootstrapped training data sets and grow a tree on each
+
+<ul class = 'build'>
+<li>Take the average of all predictions from each bootstrapped training set (or for classification take the majority vote)</li>
+<li>Pruning goes away (since we are averaging them too reduce variance)</li>
+<li>Can compute out-of-bag error estimate (i.e., like cross-validation)</li>
+</ul></li>
+</ul></div>
+
+<div class="column-left">
+</div>
+
+<img src="bagging.png" width="450px" height="450px" /> \(^{2}\)
+
+<aside class='note'><section><ul class = 'build'>
+<li>BAGGING CLASSIFICATION: we record the class predicted by each of the B trees and take a majority vote. The overall prediction is the most commonly occurring class among the B predictions
+
+<ul class = 'build'>
+<li>Recall that the key to bagging is that trees are repeatedly fit to bootstrapped subsets of the observations. One can show that on average, each bagged tree makes use of around two-thirds of the observations.</li>
+<li>The remaining one-third of the observations not used to fit a given bagged tree are referred to as the out-of-bag (OOB) observations.</li>
+<li>We can predict the response for the ith observation using each of the trees in which that observation was OOB. This will yield around B/3 predictions for the ith observation, which we average.</li>
+</ul></li>
+</ul>
+
+<p>BAGGING SUMMARY: Recall that bagging involves creating multiple copies of the original training data set using the bootstrap, fitting a separate decision tree to each copy, and then combining all of the trees in order to create a single predictive model. Each tree is built on a boot-strap data set INDEPENDENT OF OTHER TREES</p>
+
+<p><strong>PICTURE</strong>: - Schematic of the RF algorithm based on the Bagging (Bootstrap 1Aggregating) method. (1) Stage 1: Use bootstrap method to sample Msubsets from the original trainingdata sets. (2) Stage 2: Build Mindependent decision trees for model training using input covariates (v). For each individual decision tree, the prediction con?dence (posterior probabilityp?Pdjv) increases from the root toward the leaves. (3) Stage 3: Obtain prediction from each bootstrap tree over Mreplications. (4) Stage 4: Decide the ?nal result by average or majorityvoting</p></section></aside>
+
+</article></slide><slide class=''><hgroup><h2>Ensemble Methods to Improve Accuracy\(^{1}\)</h2></hgroup><article  id="ensemble-methods-to-improve-accuracy1" class="smaller ">
+
+<div class="column-left">
+<p><strong>Boosting</strong>:</p>
+
+<ul class = 'build'>
+<li>Similar to bagging except that the trees are grown <em>sequentially</em> using information from previously grown trees VS. Bagging where each tree is built on a bootstrapped df independent of other trees</li>
+<li>Each new tree is built to emphasize the observations that the previous trees mis-classified in order to improve on performance of the previous mix of trees
+
+<ul class = 'build'>
+<li>We do this by fittng small trees to the residuals to slowly improve \(\hat{f}\) where it isn&#39;t performing well.</li>
+</ul></li>
+<li>Given sequential fitting and shrinkage parameters don&#39;t need to grow as large of trees.</li>
+</ul></div>
+
+<div class="column-left">
+<ul class = 'build'>
+<li>Set \(\hat{f}(x)=0\) and \(r_{i} = y_{i}\) for all <em>i</em> in the training set</li>
+<li>For <em>b</em> = 1,2,&#8230;, <em>B</em>, repeat:
+
+<ul class = 'build'>
+<li>Fit a tree \(\hat{f} ^{b}\) with <em>d</em> splits to the training data</li>
+<li>Update \(\hat{f}\) by adding in a shrunken version of the new tree \[
+\hat{f}(x_{i}) \leftarrow \hat{f}(x_{i}) + \lambda\hat{f} ^{b}(x_{i}) 
+\]</li>
+<li>Update the residuals \[
+r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b}(x_{i})
+\]</li>
+<li>Output the boosted model \[
+\hat{f}(x) = \sum_{b=1}^{B}\lambda\hat{f} ^{b}(x)
+\]</li>
+</ul></li>
+</ul></div>
+
+<aside class='note'><section><ul class = 'build'>
+<li>Like bagging, boosting is a general approach that can be applied to many statistical learning methods for regression or classification. We only discuss boosting for decision trees.</li>
+<li>growing the tree to the residuals add it into the function, update the residuals, and continue. Trees are not independent of one another</li>
+</ul>
+
+<p>-Given the current model we fit a decision tree to the residuals from the model. ADd this new tree to the fitted fnction to update the residuals. - Current model starts off at zero and add in some shrunken version of it to our model - Update as the residuals change by a corresponding amount -EACH TREE GROWN TO THE RESIDUALS LEFT OVER FROM THE PREVIOUS SET OF TREES</p>
+
+<ul class = 'build'>
+<li>MENTION boosting for classification is similar but a bi tmore complited - won&#39;t cover here. Basically it starts by initiating equal weights per sample, fit classficaiton tree using sample wight, for misclassified samples increase sample eight save a stagg weight based on performance of current model and redo</li>
+</ul></section></aside>
+
+</article></slide><slide class=''><hgroup><h2>Ensemble Methods to improve accuracy\(^{1}\)</h2></hgroup><article  id="ensemble-methods-to-improve-accuracy1-1" class="smaller ">
+
+<div class="column-left">
+<p><strong>A number of tuning parameters for Boosting Models</strong>:</p>
+
+<ul class = 'build'>
+<li>Number of trees <em>B</em>
+
+<ul class = 'build'>
+<li>Way to control overfitting.</li>
+<li>Use cross-val to select <em>B</em></li>
+</ul></li>
+<li>Shrinkage Parameter \(\Lambda\)
+
+<ul class = 'build'>
+<li>small positive number.</li>
+<li>Controls the rate at which boosting learns (i.e., .01, .001)</li>
+</ul></li>
+<li>Depth <em>d</em>
+
+<ul class = 'build'>
+<li>number of splits in each tree</li>
+<li>Try a few values (1,2,4,8).</li>
+</ul></li>
+</ul></div>
+
+<div class="column-left">
+<p><img src="gradientboosting.jpg" width="450px" height="450px" /> \(^{3}\)</p></div>
+
+<aside class='note'><section><p>TUNING PARAMETERS:</p>
+
+<ul class = 'build'>
+<li>DEPTH: if d = 1, only 1 variable per tree and no interactions. If d = 2 , interaction</li>
+<li>SHRINKAGE: remember everytime we grow a tree we don&#39;t accept the full tree rather we shrink it back by a fraction. (sort of like pruning)</li>
+</ul></section></aside>
+
+</article></slide><slide class=''><hgroup><h2>Random Forests and Boosting: &quot;Leveraging&quot; Multiple Decision Trees</h2></hgroup><article  id="random-forests-and-boosting-leveraging-multiple-decision-trees" class="smaller ">
+
+<p><strong>Combine Regression Trees, Bagging or Boosting, and Some Tweaks to Improve Accuracy</strong></p>
+
+<div class="column-left">
+<p><em>Random Forests</em>:</p>
+
+<ul class = 'build'>
+<li>Combine decision trees with bagging to acheive very high accuracy</li>
+<li>Similar to the Bagging with the addition of a small tweak that decorrelates trees
+
+<ul class = 'build'>
+<li>Each time a split is considerd only <em>m</em> predictors chosen as split candidate from the full set of predictors and the split is only allowed to use one of them.</li>
+<li>Fresh selection taken at each split</li>
+<li><em>m</em> can take on different values, typically \(m\approx \sqrt{p}\)</li>
+</ul></li>
+<li>Don&#39;t have to use pruning (i.e., fully grown trees)</li>
+</ul></div>
+
+<div class="column-left">
+<p><em>Ensemble of Decision Trees + Boosting</em>:</p>
+
+<ul class = 'build'>
+<li>Basically what was described above. Based on <em>weak</em> learners or shallow trees.</li>
+</ul></div>
+
+<aside class='note'><section><ul class = 'build'>
+<li>as in bagging, we build a number of decision trees on bootstrapped training samples</li>
+<li>but each time a split is considered a random selection of m predictors is chosen as split candidates from the full set of p predictors. the split is allowed to use only one of those m predictors. A fresh selection of m predictors is taken at each split.
+
+<ul class = 'build'>
+<li>THIS LEADS TO REDUCED VARIANCE AFTER PREDICTION FROM TREES ARE AVG.</li>
+<li><strong>m = p WOULD JUST BE BAGGING</strong></li>
+<li>Also can think of m as the number of predictors available for splitting at each interior tree node</li>
+</ul></li>
+</ul></section></aside>
+
+</article></slide><slide class=''><hgroup><h2>Sometimes simple is better\(^{1}\)</h2></hgroup><article  id="sometimes-simple-is-better1" class="smaller ">
+
+<p><img src="simple_better.png" width="800px" height="500px" /></p>
+
+</article></slide><slide class=''><hgroup><h2>Interpreting the Black Box</h2></hgroup><article  id="interpreting-the-black-box" class="smaller ">
+
+<div class="column-left">
+<p><strong>For bagged/RF and boosting</strong>:</p>
+
+<ul class = 'build'>
+<li>Regression:
+
+<ul class = 'build'>
+<li>The total amount that the RSS is decreased due to splits over a given predictor, averaged over all trees. Large = Important</li>
+</ul></li>
+<li>Classification:
+
+<ul class = 'build'>
+<li>The total amount a similar error measures (i.e., Gini index, entropy) is decreased by splits over a given predictor, averaged over all trees</li>
+</ul></li>
+</ul></div>
+
+<div class="column-left">
+<p><img src="sasso_GDGpres_files/figure-html/unnamed-chunk-8-1.png" width="500px" height="500px" /></p></div>
+
+</article></slide><slide class=''><hgroup><h2>Favorite Resouces: Machine Learning Concepts</h2></hgroup><article  id="favorite-resouces-machine-learning-concepts" class="smaller ">
+
+<div class="column-left">
+<p><strong>Nuts and Bults</strong></p>
+
+<ul class = 'build'>
+<li>&quot;An Introduction to Statistical Learning (ISL)&quot; by James, Witten, Hastie and Tibshirani
+
+<ul class = 'build'>
+<li>Available for free online</li>
+<li>The best, in my opinion, clear overview of several foundational ML concepts</li>
+<li>More approachable videos, code, and slides found <a href='https://www.r-bloggers.com/in-depth-introduction-to-machine-learning-in-15-hours-of-expert-videos/' title=''>here</a></li>
+</ul></li>
+<li>Andrew Ng&#39;s Machine Learning Course on Coursera
+
+<ul class = 'build'>
+<li>Great online course to really understand the fundamentals</li>
+<li>Free (unless you want &quot;certificate&quot;) and readily available <a href='https://www.coursera.org/learn/machine-learning' title=''>here</a></li>
+<li>Be prepared for some math</li>
+</ul></li>
+</ul></div>
+
+<div class="column-left">
+<p><strong>Quicker Crash Courses</strong></p>
+
+<ul class = 'build'>
+<li><a href='https://www.datacamp.com/' title=''>Data Camp Caret Course</a>
+
+<ul class = 'build'>
+<li>Great for learning R in general, but specific course on the Caret Package</li>
+<li>~$30 monthly subscription (can sometimes access first portal for free)</li>
+</ul></li>
+<li><a href='https://www.analyticsvidhya.com/blog/2017/09/common-machine-learning-algorithms/' title=''>Super High-level on-line Blog Post</a>
+
+<ul class = 'build'>
+<li>Truly the bare minimum in terms of background, but covers a lot of ground</li>
+<li>Enough to get started and good code examples in Python and R</li>
+</ul></li>
+</ul></div>
+
+</article></slide><slide class=''><hgroup><h2>Favorite Resouces: Visualization and Understanding</h2></hgroup><article  id="favorite-resouces-visualization-and-understanding" class="smaller ">
+
+<p><a href='https://medium.com/applied-data-science/new-r-package-the-xgboost-explainer-51dd7d1aa211' title=''><strong>xgboostExplainer</strong></a>:</p>
+
+<ul class = 'build'>
+<li>New package that makes your XGBoost model &quot;as interpretable as a single decision tree&quot;</li>
+</ul>
+
+<p><a href='https://cran.r-project.org/web/packages/lime/index.html' title=''><strong>LIME</strong></a>:</p>
+
+<ul class = 'build'>
+<li>Local Interpretable Model-Agnostic Explanations\(^{4}\)</li>
+<li>Nice tutorial <a href='https://www.r-bloggers.com/explaining-complex-machine-learning-models-with-lime/' title=''>here</a></li>
+<li>Broad capabilities <em>for classification</em>: can apply with any model for which you can obtain prediction probabilities</li>
+</ul>
+
+<p><a href='https://github.com/kapelner/ICEbox' title=''><strong>ICEbox</strong></a>\(^{5}\):</p>
+
+<ul class = 'build'>
+<li>Allow you to visualize the model estimated by any supervised learning algorithm</li>
+<li>Classical partial dependence plots (PDPs) help visualize the average partial relationship between the predicted response and one or more features, <em>particularly in the presence of substantial interaction effects</em></li>
+<li><a href='https://www.r-bloggers.com/beyond-beta-relationships-between-partialplot-icebox-and-predcomps/' title=''>Good overview of this and similar resources</a></li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>JUST GIVE ME A BUTTON</h2></hgroup><article  id="just-give-me-a-button" class="smaller ">
+
+<p><a href='https://cran.r-project.org/web/packages/h2o/h2o.pdf' title=''>h2o auto ML</a>:</p>
+
+<ul class = 'build'>
+<li>Available in multiple language and for multiple platforms</li>
+<li>h2o has FAR MORE capabilities than this &quot;h2o.automl&quot; function and is definitely worth checking out</li>
+<li>automl function automates the supervised machine learning model training process fir a number of models</li>
+<li><a href='http://www.business-science.io/business/2017/09/18/hr_employee_attrition.html' title=''>Nice tutorial here</a>
+
+<ul class = 'build'>
+<li><strong>Disclaimer</strong> in my experience there are few datasets that come ready for a function like this without pre-processing. <em>Garbage in - garbage out</em></li>
+</ul></li>
+</ul>
+
+</article></slide><slide class=''><hgroup><h2>Shameless Plug</h2></hgroup><article  id="shameless-plug" class="smaller ">
+
+<div class="column-left">
+<p><a href='https://www.womeninanalytics.org/' title=''>Women in Analytics Conference</a>:</p>
+
+<ul class = 'build'>
+<li>3/15/18 in Columbus</li>
+<li>All day conference packed with technical and strategic talks from speakers all over the country</li>
+<li>Get your tickets now, apply for one of our remaining speaker spots, or our data viz competition</li>
+<li>Also check out the great ways to attend for free</li>
+</ul></div>
+
+<div class="column-left">
+<p><img src="WA_Logo_HiRes-01_redsized.png" width="450px" height="450px" /></p></div>
+
+</article></slide><slide class=''><hgroup><h2>Citations</h2></hgroup><article  id="citations" class="smaller ">
+
+<p>\(^{1}\) James, G., Witten, D., Hastie, T., &amp; Tibshirani, R. (2013). <em>An introduction to statistical learning (Vol. 112)</em>. New York: springer.</p>
+
+<p>\(^{2}\) He, X., Chaney, N. W., Schleiss, M., &amp; Sheffield, J. (2016). Spatial downscaling of precipitation using adaptable random forests. <em>Water Resources Research, 52(10)</em>, 8217-8237.</p>
+
+<p>\(^{3}\) <a href='https://dimensionless.in/gradient-boosting/' title=''>https://dimensionless.in/gradient-boosting/</a></p>
+
+<p>\(^{4}\) Ribeiro, M. T., Singh, S., &amp; Guestrin, C. (2016, August). Why should i trust you?: Explaining the predictions of any classifier. <em>In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (pp. 1135-1144)</em>. ACM. Chicago</p>
+
+<p>\(^{5}\) Goldstein, A., Kapelner, A., Bleich, J., &amp; Pitkin, E. (2015). Peeking inside the black box: Visualizing statistical learning with plots of individual conditional expectation. <em>Journal of Computational and Graphical Statistics, 24(1)</em>, 44-65. Chicago</p></article></slide>
+
+
+  <slide class="backdrop"></slide>
+
+</slides>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "sasso_GDGpres_files/mathjax-local/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!-- map slide visiblity events into shiny -->
+<script>
+  (function() {
+    if (window.jQuery) {
+       window.jQuery(document).on('slideleave', function(e) {
+         window.jQuery(e.target).trigger('hidden');
+      });
+       window.jQuery(document).on('slideenter', function(e) {
+         window.jQuery(e.target).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>

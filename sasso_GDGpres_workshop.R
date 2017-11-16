@@ -1,51 +1,51 @@
----
-title: 'Implimenting Popular ML Algorithms in R: Workshop'
-author: "Katie Sasso"
-date: '`r format(Sys.Date(), "%B %d, %Y")`'
-output: 
-  html_document:
-    toc: true
-    toc_float: true
-    #code_folding: hide
----
-
-## The Boston Housing Dataset
-
-This dataset contains information collected by the U.S Census Service concerning housing in the area of Boston Mass. 
-
-<div class="column-left">
-```{r message=FALSE, warning= FALSE, error=FALSE}
+#' ---
+#' title: 'Implimenting Popular ML Algorithms in R: Workshop'
+#' author: "Katie Sasso"
+#' date: '`r format(Sys.Date(), "%B %d, %Y")`'
+#' output: 
+#'   html_document:
+#'     toc: true
+#'     toc_float: true
+#'     #code_folding: hide
+#' ---
+#' 
+#' ## The Boston Housing Dataset
+#' 
+#' This dataset contains information collected by the U.S Census Service concerning housing in the area of Boston Mass. 
+#' 
+#' <div class="column-left">
+## ----message=FALSE, warning= FALSE, error=FALSE--------------------------
 
 library(MASS)
 library(caret)
 boston <- Boston
 str(boston)
 
-```
 
-The Boston data frame conaints the following variables:
-
-- **crim**: per capita crime rate by town.
-- **zn**:  proportion of residential land zoned for lots over 25,000 sq.ft.
-- **indus**: proportion of non-retail business acres per town.
-- **chas**: Charles River dummy variable (= 1 if tract bounds river; 0 otherwise).
-- **nox**: nitrogen oxides concentration (parts per 10 million).
-- **rm**: average number of rooms per dwelling.
-- **age**: proportion of owner-occupied units built prior to 1940.
-- **dis**: weighted mean of distances to five Boston employment centres.
-- **rad**: index of accessibility to radial highways.
-- **tax**: full-value property-tax rate per \$10,000.
-- **ptratio**: pupil-teacher ratio by town.
-- **black**: 1000(Bk - 0.63)^2 where Bk is the proportion of African-Americans by town.
-- **lstat**: lower status of the population (percent).
-- **medv**: median value of owner-occupied homes in \$1000s.
-    + Prices are not in error - data is from the 70s
-    
-   
-**We will use various methods to predict the median value of owner-occupied homes in $1000s (medv)**
-
-### Data Checks
-```{r message=FALSE, warning= FALSE, error=FALSE}
+#' 
+#' The Boston data frame conaints the following variables:
+#' 
+#' - **crim**: per capita crime rate by town.
+#' - **zn**:  proportion of residential land zoned for lots over 25,000 sq.ft.
+#' - **indus**: proportion of non-retail business acres per town.
+#' - **chas**: Charles River dummy variable (= 1 if tract bounds river; 0 otherwise).
+#' - **nox**: nitrogen oxides concentration (parts per 10 million).
+#' - **rm**: average number of rooms per dwelling.
+#' - **age**: proportion of owner-occupied units built prior to 1940.
+#' - **dis**: weighted mean of distances to five Boston employment centres.
+#' - **rad**: index of accessibility to radial highways.
+#' - **tax**: full-value property-tax rate per \$10,000.
+#' - **ptratio**: pupil-teacher ratio by town.
+#' - **black**: 1000(Bk - 0.63)^2 where Bk is the proportion of African-Americans by town.
+#' - **lstat**: lower status of the population (percent).
+#' - **medv**: median value of owner-occupied homes in \$1000s.
+#'     + Prices are not in error - data is from the 70s
+#'     
+#'    
+#' **We will use various methods to predict the median value of owner-occupied homes in $1000s (medv)**
+#' 
+#' ### Data Checks
+## ----message=FALSE, warning= FALSE, error=FALSE--------------------------
 
 library(purrr)
 map_dbl(boston, ~sum(is.na(.)))
@@ -56,35 +56,35 @@ summary(boston$medv)
 library(ggplot2)
 ggplot(boston, aes(medv)) + geom_histogram(bins = 30)
 
-```
 
-## Tools
-
-One quick and easy way to start tackling various machine learning problems is to use a package, like Caret or Scikit (Python) that provide a uniform interface to functions from many different ML libraries/packages:
-
-- These packages provide standardized functions for common tasks (i.e., training, prediction, tuning, variable importance)
-- Allow you to quickly and easily compare the performance of multiple algorithms
-
-**Cost of Convenience**:
-
-- All tuning parameters available for a given model (i.e., function) may not be immediately obvious when called from packages like these
-    + e.g., ntree in randomForest package - you can tune it from within caret but have to do so somewhat manually
-- Important data pre-processing steps for various models/functions may not be as apparent as they are in the source package documentation
-    + e.g., pre-processing of factor/categorical variables in xgboost
-- Always wise to be familiar with the function's source documentation
-
-
-### The Caret Package in R
-
-<iframe src = "https://topepo.github.io/caret/index.html", style = "width:900px; height:700px"></iframe>
-
-
-### Scikit in Python
-
-<iframe src = "http://scikit-learn.org/stable/index.html", style = "width:900px; height:700px"></iframe>
-
-## Data Splitting and Pre-processing
-```{r message=FALSE, warning= FALSE, error=FALSE}
+#' 
+#' ## Tools
+#' 
+#' One quick and easy way to start tackling various machine learning problems is to use a package, like Caret or Scikit (Python) that provide a uniform interface to functions from many different ML libraries/packages:
+#' 
+#' - These packages provide standardized functions for common tasks (i.e., training, prediction, tuning, variable importance)
+#' - Allow you to quickly and easily compare the performance of multiple algorithms
+#' 
+#' **Cost of Convenience**:
+#' 
+#' - All tuning parameters available for a given model (i.e., function) may not be immediately obvious when called from packages like these
+#'     + e.g., ntree in randomForest package - you can tune it from within caret but have to do so somewhat manually
+#' - Important data pre-processing steps for various models/functions may not be as apparent as they are in the source package documentation
+#'     + e.g., pre-processing of factor/categorical variables in xgboost
+#' - Always wise to be familiar with the function's source documentation
+#' 
+#' 
+#' ### The Caret Package in R
+#' 
+#' <iframe src = "https://topepo.github.io/caret/index.html", style = "width:900px; height:700px"></iframe>
+#' 
+#' 
+#' ### Scikit in Python
+#' 
+#' <iframe src = "http://scikit-learn.org/stable/index.html", style = "width:900px; height:700px"></iframe>
+#' 
+#' ## Data Splitting and Pre-processing
+## ----message=FALSE, warning= FALSE, error=FALSE--------------------------
 # configure multicore - OPTIONAL
 # if parallel backend is loaded and available functions that use it will do so.
 # can turn this off in "trainControl" function or simply do  no load parallel backend into session
@@ -104,22 +104,22 @@ index <- createDataPartition(boston$medv, p = 0.7, list = FALSE)
 train <- boston[index, ]
 test  <- boston[-index, ]
 
-```
 
-Several other pre-processing steps may be needed depending on your data and the model used. Caret, for example, provides a broad overview of the usual [pre-processing essentials](https://topepo.github.io/caret/pre-processing.html#creating-dummy-variables). 
-
-Some common cases to look out for:
-
-- Zero- and Near Zero-Variance Predictors
-- Transforming predictors
-- Correlated predictors
-- Converting factors/categorical variables to Dummy Variables (i.e., one-hot encoding)
-    + If your categorical variable happens to be type integer or numeric (i.e., chas, rad in boston) this may or may not be necessary depending on the number of categories, your question of interest, and what the integer reflects 
-    + _chas_ variable in our examples is already set up as a dummy variable
-    + We are going to choose to treat the _rad_ variable (i.e., index of accessibility to radial highways) as numeric since it reflects incremental levels of accessibility to the highway
-    + if the numbers were not meaningful (i.e., value of 2 was not further from highway than 1) we would want to dummy code this variable
-
-```{r message=FALSE, warning= FALSE, error=FALSE}
+#' 
+#' Several other pre-processing steps may be needed depending on your data and the model used. Caret, for example, provides a broad overview of the usual [pre-processing essentials](https://topepo.github.io/caret/pre-processing.html#creating-dummy-variables). 
+#' 
+#' Some common cases to look out for:
+#' 
+#' - Zero- and Near Zero-Variance Predictors
+#' - Transforming predictors
+#' - Correlated predictors
+#' - Converting factors/categorical variables to Dummy Variables (i.e., one-hot encoding)
+#'     + If your categorical variable happens to be type integer or numeric (i.e., chas, rad in boston) this may or may not be necessary depending on the number of categories, your question of interest, and what the integer reflects 
+#'     + _chas_ variable in our examples is already set up as a dummy variable
+#'     + We are going to choose to treat the _rad_ variable (i.e., index of accessibility to radial highways) as numeric since it reflects incremental levels of accessibility to the highway
+#'     + if the numbers were not meaningful (i.e., value of 2 was not further from highway than 1) we would want to dummy code this variable
+#' 
+## ----message=FALSE, warning= FALSE, error=FALSE--------------------------
 # several functions available for dummy coding - here is one from Caret package 
 # NOTE we would want to do this before train/test split 
 library(dplyr)
@@ -131,11 +131,11 @@ dummies <- dummyVars(medv ~., data = boston_dummy)
 boston_dummy <- as.data.frame(predict(dummies, newdata = boston_dummy))
 
 head(boston_dummy)
-```
 
-## Bagging & Random Forest
-
-```{r message=FALSE, warning= FALSE, error=FALSE}
+#' 
+#' ## Bagging & Random Forest
+#' 
+## ----message=FALSE, warning= FALSE, error=FALSE--------------------------
 
 #Recalling that bagging is a special case of a random forest (with m = p), the randomForest() function can be used to perform both random forests and bagging.
 # set m = p (i.e., bagging)
@@ -224,10 +224,10 @@ summary(results)
 
 #Looks like ntree = 2000 outperforms the default value of 500. 
 
-```
 
-### eXtreme Gradient Boosting
-```{r message=FALSE, warning= FALSE, error=FALSE}
+#' 
+#' ### eXtreme Gradient Boosting
+## ----message=FALSE, warning= FALSE, error=FALSE--------------------------
 # could use library(xgboost) as well in R. 
 # impliment the extreme gradient boosting algorithm. Very high predictive accuracy - often used by winners of Kaggle competitions
 
@@ -277,12 +277,12 @@ print(xgb_fit)
 
   
 	
-```
 
-
-### Neural Net
-
-```{r message=FALSE, warning= FALSE, error=FALSE}
+#' 
+#' 
+#' ### Neural Net
+#' 
+## ----message=FALSE, warning= FALSE, error=FALSE--------------------------
 
 #just accepting the defaults
 
@@ -303,5 +303,5 @@ nn <- neuralnet(f,data=train,hidden=c(5,3),linear.output=T)
 
 plot(nn)
 
-```
 
+#' 
