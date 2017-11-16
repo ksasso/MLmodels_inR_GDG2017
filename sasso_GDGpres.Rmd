@@ -7,10 +7,7 @@ output:
     widescreen: true
     smaller: true
     incremental: true
-    css: styles.css
-    mathjax: "http://example.com/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
-    self_contained: false
-    
+
 
 ---
 <style>
