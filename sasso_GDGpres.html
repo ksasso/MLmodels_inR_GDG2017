@@ -174,7 +174,7 @@ pre {
 </ul>
 
 <aside class='note'><section><ul class = 'build'>
-<li>these methods grow multiple trees which are then combined to yield a single consesnsus prediction.</li>
+<li>these methods grow multiple trees which are then combined to yield a single consensus prediction.</li>
 <li>combining multiple trees can drastically improve accuracy but looses interpretation. End regions are terminal notes .</li>
 </ul></section></aside>
 
@@ -192,7 +192,7 @@ pre {
 
 <p>overall tree stratifies or segments the players into 3 <strong>regions of predictor space</strong></p>
 
-<p>TUNING PARAMETER Controls the size of the tree to avoid overfitting. Find the best subtree from growing big tree using cost complexity pruning to the large tree in order to obtain a sequence of best subtrees. Use cross- validation to pick alpha, were alpha is a TURNING PARAMETER that controls a trade-off between the subtree&#39;s complexity and its fit to the training data. After cross calidation return to the full data set to obtain the subtree corresponding to alpha.</p>
+<p>TUNING PARAMETER Controls the size of the tree to avoid over fitting. Find the best sub tree from growing big tree using cost complexity pruning to the large tree in order to obtain a sequence of best sub trees. Use cross- validation to pick alpha, were alpha is a TURNING PARAMETER that controls a trade-off between the sub tree&#39;s complexity and its fit to the training data. After cross validation return to the full data set to obtain the sub tree corresponding to alpha.</p>
 
 <p><strong>STOPPING POINT min obs in terminal nodes. FOR CLSASIFICATION - it&#39;s just the fraction of the obs in the region that don&#39;t belong to most common class</strong></p></section></aside>
 
@@ -219,7 +219,7 @@ pre {
 <li>INTERPRET: Years most important.
 
 <ul class = 'build'>
-<li>Less experience = Hits made in the previous yaer play little role in salary</li>
+<li>Less experience = Hits made in the previous year play little role in salary</li>
 <li>5+ yrs of experience - Hits made does affect salary</li>
 </ul></li>
 </ul></section></aside>
@@ -257,7 +257,7 @@ pre {
 
 <p>BAGGING SUMMARY: Recall that bagging involves creating multiple copies of the original training data set using the bootstrap, fitting a separate decision tree to each copy, and then combining all of the trees in order to create a single predictive model. Each tree is built on a boot-strap data set INDEPENDENT OF OTHER TREES</p>
 
-<p><strong>PICTURE</strong>: - Schematic of the RF algorithm based on the Bagging (Bootstrap 1Aggregating) method. (1) Stage 1: Use bootstrap method to sample Msubsets from the original trainingdata sets. (2) Stage 2: Build Mindependent decision trees for model training using input covariates (v). For each individual decision tree, the prediction con?dence (posterior probabilityp?Pdjv) increases from the root toward the leaves. (3) Stage 3: Obtain prediction from each bootstrap tree over Mreplications. (4) Stage 4: Decide the ?nal result by average or majorityvoting</p></section></aside>
+<p><strong>PICTURE</strong>: - Schematic of the RF algorithm based on the Bagging (Bootstrap 1Aggregating) method. (1) Stage 1: Use bootstrap method to sample M subsets from the original training data sets. (2) Stage 2: Build Independent decision trees for model training using input covariates (v). For each individual decision tree, the prediction con?dence (posterior probabilityp?Pdjv) increases from the root toward the leaves. (3) Stage 3: Obtain prediction from each bootstrap tree over Mreplications. (4) Stage 4: Decide the ?nal result by average or majorityvoting</p></section></aside>
 
 </article></slide><slide class=''><hgroup><h2>Ensemble Methods to Improve Accuracy\(^{1}\)</h2></hgroup><article  id="ensemble-methods-to-improve-accuracy1" class="smaller ">
 
@@ -269,7 +269,7 @@ pre {
 <li>Each new tree is built to emphasize the observations that the previous trees mis-classified in order to improve on performance of the previous mix of trees
 
 <ul class = 'build'>
-<li>We do this by fittng small trees to the residuals to slowly improve \(\hat{f}\) where it isn&#39;t performing well.</li>
+<li>We do this by fitting small trees to the residuals to slowly improve \(\hat{f}\) where it isn&#39;t performing well.</li>
 </ul></li>
 <li>Given sequential fitting and shrinkage parameters don&#39;t need to grow as large of trees.</li>
 </ul></div>
@@ -313,7 +313,7 @@ r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b}(x_{i})
 <li>Number of trees <em>B</em>
 
 <ul class = 'build'>
-<li>Way to control overfitting.</li>
+<li>Way to control over fitting.</li>
 <li>Use cross-val to select <em>B</em></li>
 </ul></li>
 <li>Shrinkage Parameter \(\Lambda\)
@@ -337,7 +337,7 @@ r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b}(x_{i})
 
 <ul class = 'build'>
 <li>DEPTH: if d = 1, only 1 variable per tree and no interactions. If d = 2 , interaction</li>
-<li>SHRINKAGE: remember everytime we grow a tree we don&#39;t accept the full tree rather we shrink it back by a fraction. (sort of like pruning)</li>
+<li>SHRINKAGE: remember every time we grow a tree we don&#39;t accept the full tree rather we shrink it back by a fraction. (sort of like pruning)</li>
 </ul></section></aside>
 
 </article></slide><slide class=''><hgroup><h2>Random Forests and Boosting: &quot;Leveraging&quot; Multiple Decision Trees</h2></hgroup><article  id="random-forests-and-boosting-leveraging-multiple-decision-trees" class="smaller ">
@@ -348,11 +348,11 @@ r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b}(x_{i})
 <p><em>Random Forests</em>:</p>
 
 <ul class = 'build'>
-<li>Combine decision trees with bagging to acheive very high accuracy</li>
+<li>Combine decision trees with bagging to achieve very high accuracy</li>
 <li>Similar to the Bagging with the addition of a small tweak that decorrelates trees
 
 <ul class = 'build'>
-<li>Each time a split is considerd only <em>m</em> predictors chosen as split candidate from the full set of predictors and the split is only allowed to use one of them.</li>
+<li>Each time a split is considered only <em>m</em> predictors chosen as split candidate from the full set of predictors and the split is only allowed to use one of them.</li>
 <li>Fresh selection taken at each split</li>
 <li><em>m</em> can take on different values, typically \(m\approx \sqrt{p}\)</li>
 </ul></li>
@@ -477,7 +477,7 @@ r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b}(x_{i})
 <li><a href='http://www.business-science.io/business/2017/09/18/hr_employee_attrition.html' title=''>Nice tutorial here</a>
 
 <ul class = 'build'>
-<li><strong>Disclaimer</strong> in my experience there are few datasets that come ready for a function like this without pre-processing. <em>Garbage in - garbage out</em></li>
+<li><strong>Disclaimer</strong> in my experience there are few data sets that come ready for a function like this without pre-processing. <em>Garbage in - garbage out</em></li>
 </ul></li>
 </ul>
 

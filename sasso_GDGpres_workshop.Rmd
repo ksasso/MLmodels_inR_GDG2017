@@ -11,7 +11,7 @@ output:
 
 ## The Boston Housing Dataset
 
-This dataset contains information collected by the U.S Census Service concerning housing in the area of Boston Mass. 
+This data set contains information collected by the U.S Census Service concerning housing in the area of Boston Mass. 
 
 <div class="column-left">
 ```{r message=FALSE, warning= FALSE, error=FALSE}
@@ -23,7 +23,7 @@ str(boston)
 
 ```
 
-The Boston data frame conaints the following variables:
+The Boston data frame contains the following variables:
 
 - **crim**: per capita crime rate by town.
 - **zn**:  proportion of residential land zoned for lots over 25,000 sq.ft.

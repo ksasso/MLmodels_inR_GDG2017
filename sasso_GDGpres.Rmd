@@ -79,7 +79,7 @@ pre {
 
 <div class="notes">
 
-- these methods grow multiple trees which are then combined to yield a single consesnsus prediction. 
+- these methods grow multiple trees which are then combined to yield a single consensus prediction. 
 - combining multiple trees can drastically improve accuracy but looses interpretation. End regions are terminal notes .
 
 </div>  
@@ -115,7 +115,7 @@ Process is continued until we reach a stopping point (e.g., no region contains m
 overall tree stratifies or segments the players into 3 **regions of predictor space**
 
 TUNING PARAMETER
-Controls the size of the tree to avoid overfitting. Find the best subtree from growing big tree using cost complexity pruning to the large tree in order to obtain a sequence of best subtrees. Use cross- validation to pick alpha, were alpha is a TURNING PARAMETER that controls a trade-off between the subtree's complexity and its fit to the training data. After cross calidation return to the full data set to obtain the subtree corresponding to alpha. 
+Controls the size of the tree to avoid over fitting. Find the best sub tree from growing big tree using cost complexity pruning to the large tree in order to obtain a sequence of best sub trees. Use cross- validation to pick alpha, were alpha is a TURNING PARAMETER that controls a trade-off between the sub tree's complexity and its fit to the training data. After cross validation return to the full data set to obtain the sub tree corresponding to alpha. 
 
 **STOPPING POINT min obs in terminal nodes. FOR CLSASIFICATION - it's just the fraction of the obs in the region that don't belong to most common class**
 
@@ -162,7 +162,7 @@ where $\hat{y}_{R_{j}}$ is the mean response for the training observation within
 - In the hitters tree, the two internal nodes are indicated by the text Years<4.5 and Hits<117.5.
 
 - INTERPRET: Years most important.
-    + Less experience = Hits made in the previous yaer play little role in salary
+    + Less experience = Hits made in the previous year play little role in salary
     + 5+ yrs of experience - Hits made does affect salary
 
 </div>
@@ -196,7 +196,7 @@ $^{2}$
 BAGGING SUMMARY: Recall that bagging involves creating multiple copies of the original training data set using the bootstrap, fitting a separate decision tree to each copy, and then combining all of the trees in order to create a single predictive model. Each tree is built on a boot-strap data set INDEPENDENT OF OTHER TREES 
 
 **PICTURE**:
-- Schematic of the RF algorithm based on the Bagging (Bootstrap 1Aggregating) method. (1) Stage 1: Use bootstrap method to sample Msubsets from the original trainingdata sets. (2) Stage 2: Build Mindependent decision trees for model training using input covariates (v). For each individual decision tree, the prediction con?dence (posterior probabilityp?Pdjv) increases from the root toward the leaves. (3) Stage 3: Obtain prediction from each bootstrap tree over Mreplications. (4) Stage 4: Decide the ?nal result by average or majorityvoting 
+- Schematic of the RF algorithm based on the Bagging (Bootstrap 1Aggregating) method. (1) Stage 1: Use bootstrap method to sample M subsets from the original training data sets. (2) Stage 2: Build Independent decision trees for model training using input covariates (v). For each individual decision tree, the prediction con?dence (posterior probabilityp?Pdjv) increases from the root toward the leaves. (3) Stage 3: Obtain prediction from each bootstrap tree over Mreplications. (4) Stage 4: Decide the ?nal result by average or majorityvoting 
 
 </div>
 
@@ -207,7 +207,7 @@ BAGGING SUMMARY: Recall that bagging involves creating multiple copies of the or
 
 - Similar to bagging except that the trees are grown _sequentially_ using information from previously grown trees VS. Bagging where each tree is built on a bootstrapped df independent of other trees
 - Each new tree is built to emphasize the observations that the previous trees mis-classified in order to improve on performance of the previous mix of trees
-    + We do this by fittng small trees to the residuals to slowly improve $\hat{f}$ where it isn't performing well.
+    + We do this by fitting small trees to the residuals to slowly improve $\hat{f}$ where it isn't performing well.
 - Given sequential fitting and shrinkage parameters don't need to grow as large of trees.
 
 </div>
@@ -252,7 +252,7 @@ r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b}(x_{i})
 **A number of tuning parameters for Boosting Models**: 
 
 - Number of trees _B_ 
-    + Way to control overfitting. 
+    + Way to control over fitting. 
     + Use cross-val to select _B_
 - Shrinkage Parameter $\Lambda$
     + small positive number. 
@@ -275,7 +275,7 @@ $^{3}$
 TUNING PARAMETERS:
 
 - DEPTH: if d = 1, only 1 variable per tree and no interactions. If d = 2 , interaction
-- SHRINKAGE: remember everytime we grow a tree we don't accept the full tree rather we shrink it back by a fraction. (sort of like pruning)
+- SHRINKAGE: remember every time we grow a tree we don't accept the full tree rather we shrink it back by a fraction. (sort of like pruning)
 
 </div>
 
@@ -286,9 +286,9 @@ TUNING PARAMETERS:
 <div class="column-left">
 _Random Forests_:
 
-- Combine decision trees with bagging to acheive very high accuracy
+- Combine decision trees with bagging to achieve very high accuracy
 - Similar to the Bagging with the addition of a small tweak that decorrelates trees
-    + Each time a split is considerd only _m_ predictors chosen as split candidate from the full set of predictors and the split is only allowed to use one of them.
+    + Each time a split is considered only _m_ predictors chosen as split candidate from the full set of predictors and the split is only allowed to use one of them.
     + Fresh selection taken at each split
     + _m_ can take on different values, typically $m\approx \sqrt{p}$
 - Don't have to use pruning (i.e., fully grown trees)
@@ -411,7 +411,7 @@ varimpplot
 - h2o has FAR MORE capabilities than this "h2o.automl" function and is definitely worth checking out
 - automl function automates the supervised machine learning model training process fir a number of models
 - [Nice tutorial here](http://www.business-science.io/business/2017/09/18/hr_employee_attrition.html) 
-    + **Disclaimer** in my experience there are few datasets that come ready for a function like this without pre-processing. _Garbage in - garbage out_
+    + **Disclaimer** in my experience there are few data sets that come ready for a function like this without pre-processing. _Garbage in - garbage out_
 
 ##Shameless Plug
 
