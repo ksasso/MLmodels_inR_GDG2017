@@ -325,19 +325,19 @@ pre {
 
 <div class="column-left">
 <ul class = 'build'>
-<li>Set \(\hat{f}(x)=0\) and \(r_{i} = y_{i}\) for all <em>i</em> in the training set</li>
-<li>For <em>b</em> = 1,2,&#8230;, <em>B</em>, repeat:
+<li>Set \(\hat{f}_{1}(x)=0\) and \(r_{i} = y_{i}\) for all <em>i</em> in the training set at stage one</li>
+<li>For <em>k</em> = 1,2,&#8230;, <em>K</em>, repeat:
 
 <ul class = 'build'>
-<li>Fit a tree \(\hat{f}^{b_{1}}\) with <em>d</em> splits to the training data</li>
+<li>Fit a tree \(\hat{t}^{k}\) with <em>d</em> splits to the training data</li>
 <li>Update \(\hat{f}\) by adding in a shrunken version of the new tree \[
-\hat{f}(x_{i}) \leftarrow \hat{f}(x_{i}) + \lambda\hat{f} ^{b_{1}}(x_{i}) 
+\hat{f}_{k+1}(x_{i}) \leftarrow \hat{f}_{k}(x_{i}) + \lambda\hat{t}_{k}(x_{i}) 
 \]</li>
 <li>Update the residuals \[
-r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b_{1}}(x_{i})
+r_{i},_{k+1}\leftarrow r_{i},_{k}-\lambda\hat{f}_{k}(x_{i})
 \]</li>
 <li>Output the boosted model \[
-\hat{f}(x) = \sum_{b=1}^{B}\lambda\hat{f} ^{b_{1}}(x)
+\hat{f}(x) = \sum_{k=1}^{K}\lambda\hat{t}_{k}(x)
 \]</li>
 </ul></li>
 </ul></div>

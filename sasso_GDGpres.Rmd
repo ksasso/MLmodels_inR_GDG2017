@@ -249,20 +249,20 @@ BAGGING SUMMARY: Recall that bagging involves creating multiple copies of the or
 
 <div class="column-left">
 
-- Set $\hat{f}(x)=0$ and $r_{i} = y_{i}$ for all _i_ in the training set
-- For _b_ = 1,2,..., _B_, repeat:
-    + Fit a tree $\hat{f}^{b_{1}}$ with _d_ splits to the training data
+- Set $\hat{f}_{1}(x)=0$ and $r_{i},_{1} = y_{i}$ for all _i_ in the training set at stage one
+- For _k_ = 1,2,..., _K_, repeat:
+    + Fit a tree $\hat{t}^{k}$ with _d_ splits to the training data
     + Update $\hat{f}$ by adding in a shrunken version of the new tree 
 \[
-\hat{f}(x_{i}) \leftarrow \hat{f}(x_{i}) + \lambda\hat{f} ^{b_{1}}(x_{i}) 
+\hat{f}_{k+1}(x_{i}) \leftarrow \hat{f}_{k}(x_{i}) + \lambda\hat{t}_{k}(x_{i}) 
 \]
     + Update the residuals
 \[
-r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b_{1}}(x_{i})
+r_{i},_{k+1}\leftarrow r_{i},_{k}-\lambda\hat{f}_{k}(x_{i})
 \]
     + Output the boosted model
 \[
-\hat{f}(x) = \sum_{b=1}^{B}\lambda\hat{f} ^{b_{1}}(x)
+\hat{f}(x) = \sum_{k=1}^{K}\lambda\hat{t}_{k}(x)
 \]
 </div>
 
