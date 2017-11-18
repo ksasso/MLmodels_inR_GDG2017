@@ -11,7 +11,7 @@
 #' 
 #' ## The Boston Housing Dataset
 #' 
-#' This dataset contains information collected by the U.S Census Service concerning housing in the area of Boston Mass. 
+#' This data set contains information collected by the U.S Census Service concerning housing in the area of Boston Mass. 
 #' 
 #' <div class="column-left">
 ## ----message=FALSE, warning= FALSE, error=FALSE--------------------------
@@ -23,7 +23,7 @@ str(boston)
 
 
 #' 
-#' The Boston data frame conaints the following variables:
+#' The Boston data frame contains the following variables:
 #' 
 #' - **crim**: per capita crime rate by town.
 #' - **zn**:  proportion of residential land zoned for lots over 25,000 sq.ft.
@@ -142,7 +142,7 @@ head(boston_dummy)
 
 tunegrid <- expand.grid(mtry=ncol(boston)-1)
 
-rf_fit <- train(medv ~ .,
+rf_fit_bag <- train(medv ~ .,
                   data = train,
                   method = "rf",
                   tuneGrid = tunegrid,
@@ -151,9 +151,13 @@ rf_fit <- train(medv ~ .,
                                                   repeats = 3,  # # of repeats (i.e., 10-fold cross validation with 3 repeats)
                                                   verboseIter = FALSE),
                 importance = TRUE) # we don't want to print training log
-print(rf_fit)
-varImp(rf_fit)
+print(rf_fit_bag)
+varImp(rf_fit_bag)
 
+yhat_rf_bag <- predict(rf_fit_bag,newdata=test)
+rf_bag_test_err <- data.frame(model = 'bag', testerr = mean((yhat_rf_bag-test$medv)^2))
+
+test_err <- rf_bag_test_err
 
 #let's try the typical setting of m - i.e., a random forest 
 
@@ -175,6 +179,7 @@ print(rf_fit)
 varImp(rf_fit)
 
 
+
 #visualizing variable importance
 imp_df <- bind_rows(varImp(rf_fit)[1]) %>% 
   mutate(var = names(boston[1:13]))
@@ -191,18 +196,23 @@ plot(yhat_rf, test$medv)
 abline(0,1)
 
 
+rf_test_err <- data.frame(model = 'rf', testerr = mean((yhat_rf-test$medv)^2))
+test_err <- rbind(test_err, rf_test_err)
+
 # could've set ntree as well but ability to do so not as apparent as in the source randomForest package - in my opinion
 # In caret, could also do a random search for turning parameters (random values within a range)
+library(caret)
 
 rf_fit <- train(medv ~ .,
                   data = train,
                   method = "rf",
                   tuneLength = 10,
+                  ntree = 25,
                   trControl = trainControl(method = "oob", #could've used resampling here instead
                                            number = 10,  
                                            verboseIter = FALSE,# we don't want to print training log
-                                           search = 'random'),
-                ntree = 25) #try random tuning parameters for all available tuning options. We will set the max number of tuning parameter combos generated from random search with tuneLength
+                                           search = 'random')
+                ) #try random tuning parameters for all available tuning options. We will set the max number of tuning parameter combos generated from random search with tuneLength
 
 #looks like the sqrt with resampling may have been the best!
 print(rf_fit)
@@ -254,6 +264,19 @@ xgb_fit <- train(medv ~ .,
 print(xgb_fit)
 varImp(xgb_fit)
 
+yhat_xgb = predict(xgb_fit,newdata=test)
+
+xgb_test_err <- data.frame(model = 'xgb', testerr = mean((yhat_xgb-test$medv)^2))
+test_err <- rbind(test_err, xgb_test_err)
+
+#winner? 
+library(ggplot2)
+library(dplyr)
+
+test_err %>% 
+  ggplot(aes(model,testerr)) +
+  geom_bar(stat = "density")
+
  #rm (avg. number of rooms per dwelling) is still by far the most important
 
 #eta is our learning rate or "shrinkage parameter" from slides
@@ -279,29 +302,4 @@ print(xgb_fit)
 	
 
 #' 
-#' 
-#' ### Neural Net
-#' 
-## ----message=FALSE, warning= FALSE, error=FALSE--------------------------
-
-#just accepting the defaults
-
-fit_nn <- train(medv ~ .,
-                         data = train,
-                         method = "neuralnet",
-                         trControl = trainControl(method = "repeatedcv", 
-                                                  number = 10, 
-                                                  repeats = 3, 
-                                                  verboseIter = FALSE))
-print(fit_nn)
-#not a great fit!
-
-#going back to base for layer tweaking ( can do in Caret as well)
-n <- names(train)
-f <- as.formula(paste("medv ~", paste(n[!n %in% "medv"], collapse = " + ")))
-nn <- neuralnet(f,data=train,hidden=c(5,3),linear.output=T)
-
-plot(nn)
-
-
 #' 

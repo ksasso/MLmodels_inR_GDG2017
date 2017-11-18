@@ -44,6 +44,9 @@ pre {
 }
 </style>
 
+## Materials
+
+https://github.com/ksasso/MLmodels_inR_GDG2017
 
 ##Machine Learning Types and Algorithms
 
@@ -69,6 +72,35 @@ pre {
 
 </div>
 
+## Resampling Methods
+
+<div class="column-left">
+
+- Prediction error
+    + The deviation of actual values from the predicted values
+    + Calculating this using the same observations used to train the model can lead to underestimating the prediction error
+    
+- Resampling Methods
+    + Refit a model of interest to a second set of observations, or a test set
+    + Predicting responses of new observations, that were not used in training the model
+    + Way of reducing bias when evaluating model fit
+
+</div>
+
+<div class="column-left">
+
+- Validation-set approach
+    + Randomly divide the available sample into a training set and a hold-out set
+    + Fit model to training set, use fitted model to predict responses from the test set
+    + Test error can be highly variable, depending on which obs are included 
+    
+- _K_-fold Cross-Validation (CV)
+    + Randomly divide the data into _K_ equal-sized parts.
+    + Leave out part _k_, fit the model to the other _K_-1 parts (combined) and obtain predictions for the left-out _k_ th part.
+    + Each "fold" gets a turn as a training and test set and prediction error is calculated. Combine results to assess overall prediction error
+
+</div>
+
 ## Tree-based methods for regression and classification:
 
 - CART (Classification and Regression Trees)
@@ -80,7 +112,7 @@ pre {
 <div class="notes">
 
 - these methods grow multiple trees which are then combined to yield a single consensus prediction. 
-- combining multiple trees can drastically improve accuracy but looses interpretation. End regions are terminal notes .
+- combining multiple trees can drastically improve accuracy but looses interpretation. End regions are terminal nodes .
 
 </div>  
 
@@ -174,7 +206,6 @@ where $\hat{y}_{R_{j}}$ is the mean response for the training observation within
 - Take repeated samples from the training data set
 - Generate B different bootstrapped training data sets and grow a tree on each
     + Take the average of all predictions from each bootstrapped training set  (or for classification take the majority vote)
-    + Pruning goes away (since we are averaging them too reduce variance)
     + Can compute out-of-bag error estimate (i.e., like cross-validation)
 </div>
 
@@ -198,6 +229,10 @@ BAGGING SUMMARY: Recall that bagging involves creating multiple copies of the or
 **PICTURE**:
 - Schematic of the RF algorithm based on the Bagging (Bootstrap 1Aggregating) method. (1) Stage 1: Use bootstrap method to sample M subsets from the original training data sets. (2) Stage 2: Build Independent decision trees for model training using input covariates (v). For each individual decision tree, the prediction con?dence (posterior probabilityp?Pdjv) increases from the root toward the leaves. (3) Stage 3: Obtain prediction from each bootstrap tree over Mreplications. (4) Stage 4: Decide the ?nal result by average or majorityvoting 
 
+- COMMON QUESTIONS:
+    + Building multiple trees- one tree does not result
+    + Each observation has multiple predictions. For that given observations - we average over all predictions for that observation to get the final predict. Same in classification actually but it's an averaging of 1/s 0/s to get a probabolity
+
 </div>
 
 
@@ -216,18 +251,18 @@ BAGGING SUMMARY: Recall that bagging involves creating multiple copies of the or
 
 - Set $\hat{f}(x)=0$ and $r_{i} = y_{i}$ for all _i_ in the training set
 - For _b_ = 1,2,..., _B_, repeat:
-    + Fit a tree $\hat{f} ^{b}$ with _d_ splits to the training data
+    + Fit a tree $\hat{f}^{b_{1}}$ with _d_ splits to the training data
     + Update $\hat{f}$ by adding in a shrunken version of the new tree 
 \[
-\hat{f}(x_{i}) \leftarrow \hat{f}(x_{i}) + \lambda\hat{f} ^{b}(x_{i}) 
+\hat{f}(x_{i}) \leftarrow \hat{f}(x_{i}) + \lambda\hat{f} ^{b_{1}}(x_{i}) 
 \]
     + Update the residuals
 \[
-r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b}(x_{i})
+r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b_{1}}(x_{i})
 \]
     + Output the boosted model
 \[
-\hat{f}(x) = \sum_{b=1}^{B}\lambda\hat{f} ^{b}(x)
+\hat{f}(x) = \sum_{b=1}^{B}\lambda\hat{f} ^{b_{1}}(x)
 \]
 </div>
 
@@ -242,6 +277,13 @@ r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b}(x_{i})
 -EACH TREE GROWN TO THE RESIDUALS LEFT OVER FROM THE PREVIOUS SET OF TREES 
 
 - MENTION boosting for classification is similar but a bi tmore complited - won't cover here.  Basically it starts by initiating equal weights per sample, fit classficaiton tree using sample wight, for misclassified samples increase sample eight save a stagg weight based on performance of current model and redo 
+
+COMMON QUESTIONS - CHECK 
+  - Start off with a funciton for first tree = 0 
+  - Residuals are the data. 
+  - AFTER THE FIRST TREE MODELING THE RESIDUALS - trying to reduce the discrepancy between the residuals from the first and second. build a 
+collection of trees captuing diff info complimenting one another 
+  - ADD INDICES TO THE TREES AND THE FUNCTIONS FROM 1...B
 
 </div>
 

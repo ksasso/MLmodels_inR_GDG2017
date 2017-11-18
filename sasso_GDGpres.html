@@ -10,7 +10,7 @@
 
 
 
-  <meta name="date" content="2017-11-16" />
+  <meta name="date" content="2017-11-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -94,7 +94,7 @@
       <h1 data-config-title><!-- populated from slide_config.json --></h1>
       <h2 data-config-subtitle><!-- populated from slide_config.json --></h2>
       <p data-config-presenter><!-- populated from slide_config.json --></p>
-            <p style="margin-top: 6px; margin-left: -2px;">November 16, 2017</p>
+            <p style="margin-top: 6px; margin-left: -2px;">November 18, 2017</p>
           </hgroup>
   </slide>
 
@@ -132,7 +132,11 @@ pre {
 }
 </style>
 
-<slide class=''><hgroup><h2>Machine Learning Types and Algorithms</h2></hgroup><article  id="machine-learning-types-and-algorithms" class="smaller ">
+<slide class=''><hgroup><h2>Materials</h2></hgroup><article  id="materials" class="smaller ">
+
+<p><a href='https://github.com/ksasso/MLmodels_inR_GDG2017' title=''>https://github.com/ksasso/MLmodels_inR_GDG2017</a></p>
+
+</article></slide><slide class=''><hgroup><h2>Machine Learning Types and Algorithms</h2></hgroup><article  id="machine-learning-types-and-algorithms" class="smaller ">
 
 <div class="column-left">
 <p><strong>Supervised</strong>:</p>
@@ -161,6 +165,43 @@ pre {
 </ul></li>
 </ul></div>
 
+</article></slide><slide class=''><hgroup><h2>Resampling Methods</h2></hgroup><article  id="resampling-methods" class="smaller ">
+
+<div class="column-left">
+<ul class = 'build'>
+<li>Prediction error
+
+<ul class = 'build'>
+<li>The deviation of actual values from the predicted values</li>
+<li>Calculating this using the same observations used to train the model can lead to underestimating the prediction error</li>
+</ul></li>
+<li>Resampling Methods
+
+<ul class = 'build'>
+<li>Refit a model of interest to a second set of observations, or a test set</li>
+<li>Predicting responses of new observations, that were not used in training the model</li>
+<li>Way of reducing bias when evaluating model fit</li>
+</ul></li>
+</ul></div>
+
+<div class="column-left">
+<ul class = 'build'>
+<li>Validation-set approach
+
+<ul class = 'build'>
+<li>Randomly divide the available sample into a training set and a hold-out set</li>
+<li>Fit model to training set, use fitted model to predict responses from the test set</li>
+<li>Test error can be highly variable, depending on which obs are included</li>
+</ul></li>
+<li><em>K</em>-fold Cross-Validation (CV)
+
+<ul class = 'build'>
+<li>Randomly divide the data into <em>K</em> equal-sized parts.</li>
+<li>Leave out part <em>k</em>, fit the model to the other <em>K</em>-1 parts (combined) and obtain predictions for the left-out <em>k</em> th part.</li>
+<li>Each &quot;fold&quot; gets a turn as a training and test set and prediction error is calculated. Combine results to assess overall prediction error</li>
+</ul></li>
+</ul></div>
+
 </article></slide><slide class=''><hgroup><h2>Tree-based methods for regression and classification:</h2></hgroup><article  id="tree-based-methods-for-regression-and-classification" class="smaller ">
 
 <ul class = 'build'>
@@ -175,7 +216,7 @@ pre {
 
 <aside class='note'><section><ul class = 'build'>
 <li>these methods grow multiple trees which are then combined to yield a single consensus prediction.</li>
-<li>combining multiple trees can drastically improve accuracy but looses interpretation. End regions are terminal notes .</li>
+<li>combining multiple trees can drastically improve accuracy but looses interpretation. End regions are terminal nodes .</li>
 </ul></section></aside>
 
 </article></slide><slide class=''><hgroup><h2>Regression Trees: The Basics\(^{1}\)</h2></hgroup><article  id="regression-trees-the-basics1" class="smaller ">
@@ -235,7 +276,6 @@ pre {
 
 <ul class = 'build'>
 <li>Take the average of all predictions from each bootstrapped training set (or for classification take the majority vote)</li>
-<li>Pruning goes away (since we are averaging them too reduce variance)</li>
 <li>Can compute out-of-bag error estimate (i.e., like cross-validation)</li>
 </ul></li>
 </ul></div>
@@ -257,7 +297,16 @@ pre {
 
 <p>BAGGING SUMMARY: Recall that bagging involves creating multiple copies of the original training data set using the bootstrap, fitting a separate decision tree to each copy, and then combining all of the trees in order to create a single predictive model. Each tree is built on a boot-strap data set INDEPENDENT OF OTHER TREES</p>
 
-<p><strong>PICTURE</strong>: - Schematic of the RF algorithm based on the Bagging (Bootstrap 1Aggregating) method. (1) Stage 1: Use bootstrap method to sample M subsets from the original training data sets. (2) Stage 2: Build Independent decision trees for model training using input covariates (v). For each individual decision tree, the prediction con?dence (posterior probabilityp?Pdjv) increases from the root toward the leaves. (3) Stage 3: Obtain prediction from each bootstrap tree over Mreplications. (4) Stage 4: Decide the ?nal result by average or majorityvoting</p></section></aside>
+<p><strong>PICTURE</strong>: - Schematic of the RF algorithm based on the Bagging (Bootstrap 1Aggregating) method. (1) Stage 1: Use bootstrap method to sample M subsets from the original training data sets. (2) Stage 2: Build Independent decision trees for model training using input covariates (v). For each individual decision tree, the prediction con?dence (posterior probabilityp?Pdjv) increases from the root toward the leaves. (3) Stage 3: Obtain prediction from each bootstrap tree over Mreplications. (4) Stage 4: Decide the ?nal result by average or majorityvoting</p>
+
+<ul class = 'build'>
+<li>COMMON QUESTIONS:
+
+<ul class = 'build'>
+<li>Building multiple trees- one tree does not result</li>
+<li>Each observation has multiple predictions. For that given observations - we average over all predictions for that observation to get the final predict. Same in classification actually but it&#39;s an averaging of 1/s 0/s to get a probabolity</li>
+</ul></li>
+</ul></section></aside>
 
 </article></slide><slide class=''><hgroup><h2>Ensemble Methods to Improve Accuracy\(^{1}\)</h2></hgroup><article  id="ensemble-methods-to-improve-accuracy1" class="smaller ">
 
@@ -280,15 +329,15 @@ pre {
 <li>For <em>b</em> = 1,2,&#8230;, <em>B</em>, repeat:
 
 <ul class = 'build'>
-<li>Fit a tree \(\hat{f} ^{b}\) with <em>d</em> splits to the training data</li>
+<li>Fit a tree \(\hat{f}^{b_{1}}\) with <em>d</em> splits to the training data</li>
 <li>Update \(\hat{f}\) by adding in a shrunken version of the new tree \[
-\hat{f}(x_{i}) \leftarrow \hat{f}(x_{i}) + \lambda\hat{f} ^{b}(x_{i}) 
+\hat{f}(x_{i}) \leftarrow \hat{f}(x_{i}) + \lambda\hat{f} ^{b_{1}}(x_{i}) 
 \]</li>
 <li>Update the residuals \[
-r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b}(x_{i})
+r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b_{1}}(x_{i})
 \]</li>
 <li>Output the boosted model \[
-\hat{f}(x) = \sum_{b=1}^{B}\lambda\hat{f} ^{b}(x)
+\hat{f}(x) = \sum_{b=1}^{B}\lambda\hat{f} ^{b_{1}}(x)
 \]</li>
 </ul></li>
 </ul></div>
@@ -302,7 +351,9 @@ r_{i}\leftarrow r_{i}-\lambda\hat{f} ^{b}(x_{i})
 
 <ul class = 'build'>
 <li>MENTION boosting for classification is similar but a bi tmore complited - won&#39;t cover here. Basically it starts by initiating equal weights per sample, fit classficaiton tree using sample wight, for misclassified samples increase sample eight save a stagg weight based on performance of current model and redo</li>
-</ul></section></aside>
+</ul>
+
+<p>COMMON QUESTIONS - CHECK - Start off with a funciton for first tree = 0 - Residuals are the data. - AFTER THE FIRST TREE MODELING THE RESIDUALS - trying to reduce the discrepancy between the residuals from the first and second. build a collection of trees captuing diff info complimenting one another - ADD INDICES TO THE TREES AND THE FUNCTIONS FROM 1&#8230;B</p></section></aside>
 
 </article></slide><slide class=''><hgroup><h2>Ensemble Methods to improve accuracy\(^{1}\)</h2></hgroup><article  id="ensemble-methods-to-improve-accuracy1-1" class="smaller ">
 
