@@ -114,7 +114,7 @@ Some common cases to look out for:
 - Transforming predictors
 - Correlated predictors
 - Converting factors/categorical variables to Dummy Variables (i.e., one-hot encoding)
-    + If your categorical variable happens to be type integer or numeric (i.e., chas, rad in boston) this may or may not be necessary depending on the number of categories, your question of interest, and what the integer reflects 
+    + If your categorical variable happens to be type integer or numeric (i.e., chas, rad in boston) this may or may not be necessary depending on the number of categories, your question of interest, and what the integer reflects
     + _chas_ variable in our examples is already set up as a dummy variable
     + We are going to choose to treat the _rad_ variable (i.e., index of accessibility to radial highways) as numeric since it reflects incremental levels of accessibility to the highway
     + if the numbers were not meaningful (i.e., value of 2 was not further from highway than 1) we would want to dummy code this variable
